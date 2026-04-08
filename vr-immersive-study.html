@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+<meta charset="UTF-8">
+<title>Diegetic UI Research Study</title>
+<script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#060610;font-family:'Segoe UI',system-ui,sans-serif;overflow:hidden;color:#fff}
+
+/* ── INTRO SCREEN ── */
+#intro{
+  position:absolute;inset:0;z-index:300;
+  background:linear-gradient(135deg,#060610 0%,#0d0d22 100%);
+  display:flex;align-items:center;justify-content:center;flex-direction:column;gap:0;
+}
+#intro .logo{
+  width:64px;height:64px;border-radius:16px;
+  background:linear-gradient(135deg,#534AB7,#1db894);
+  display:flex;align-items:center;justify-content:center;
+  font-size:28px;margin-bottom:28px;
+}
+#intro h1{font-size:28px;font-weight:700;letter-spacing:-.02em;margin-bottom:8px}
+#intro p{font-size:14px;color:#666;margin-bottom:40px;text-align:center;max-width:400px;line-height:1.6}
+#intro .meta-row{display:flex;gap:32px;margin-bottom:40px}
+#intro .meta-item{text-align:center}
+#intro .meta-item .mv{font-size:22px;font-weight:700;color:#7a6aee}
+#intro .meta-item .ml{font-size:11px;color:#555;margin-top:2px;letter-spacing:.05em;text-transform:uppercase}
+#intro .cond-preview{display:flex;gap:12px;margin-bottom:40px}
+#intro .cp{padding:12px 20px;border-radius:10px;font-size:13px;font-weight:500;border:1px solid}
+#intro .cp.a{background:rgba(83,74,183,.15);border-color:rgba(83,74,183,.4);color:#9a8aee}
+#intro .cp.b{background:rgba(29,184,148,.1);border-color:rgba(29,184,148,.3);color:#4dcca8}
+#intro button{
+  padding:14px 40px;border-radius:10px;font-size:15px;font-weight:600;
+  background:linear-gradient(135deg,#534AB7,#3d35a0);
+  border:none;color:#fff;cursor:pointer;letter-spacing:.02em;
+  transition:transform .15s,opacity .15s;
+}
+#intro button:hover{transform:translateY(-1px);opacity:.9}
+
+/* ── MAIN HUD ── */
+#hud{position:absolute;inset:0;z-index:100;pointer-events:none;display:none}
+
+/* Top strip */
+#top-strip{
+  position:absolute;top:0;left:0;right:0;
+  padding:14px 20px;
+  display:flex;align-items:flex-start;justify-content:space-between;
+  background:linear-gradient(180deg,rgba(6,6,16,.9) 0%,transparent 100%);
+}
+.panel{
+  background:rgba(12,12,24,.88);
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:12px;padding:12px 18px;
+  backdrop-filter:blur(8px);
+}
+#cond-panel .cp-label{font-size:10px;color:#534AB7;letter-spacing:.12em;text-transform:uppercase;margin-bottom:4px}
+#cond-panel .cp-title{font-size:15px;font-weight:600;margin-bottom:3px}
+#cond-panel .cp-task{font-size:12px;color:#7a7aaa}
+
+#timer-panel{text-align:right}
+#timer-panel .tl{font-size:10px;color:#555;letter-spacing:.1em;text-transform:uppercase;margin-bottom:3px}
+#timer-panel .tv{font-size:30px;font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:-.02em;line-height:1}
+#timer-panel .tt{font-size:11px;color:#555;margin-top:3px}
+
+/* Progress bar */
+#progress-bar{
+  position:absolute;top:0;left:0;right:0;height:3px;
+  background:rgba(255,255,255,.06);
+}
+#progress-fill{height:100%;width:0%;background:linear-gradient(90deg,#534AB7,#1db894);transition:width .4s ease}
+
+/* Crosshair */
+#crosshair{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:20px;height:20px;pointer-events:none;
+}
+#crosshair::before,#crosshair::after{
+  content:'';position:absolute;background:rgba(255,255,255,.5);border-radius:2px;
+}
+#crosshair::before{width:2px;height:100%;left:9px;top:0}
+#crosshair::after{width:100%;height:2px;left:0;top:9px}
+
+/* Bottom strip */
+#bottom-strip{
+  position:absolute;bottom:0;left:0;right:0;padding:14px 20px;
+  display:flex;align-items:flex-end;justify-content:space-between;
+  background:linear-gradient(0deg,rgba(6,6,16,.9) 0%,transparent 100%);
+  pointer-events:auto;
+}
+
+#log-panel{width:260px;max-height:130px;overflow:hidden}
+#log-panel .lhead{font-size:10px;color:#444;letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px}
+.lr{font-size:12px;padding:4px 0;border-bottom:1px solid #0f0f1f;display:flex;gap:8px;align-items:center}
+.lr .lbadge{font-size:10px;padding:2px 6px;border-radius:4px;font-weight:600;flex-shrink:0}
+.lr.ok .lbadge{background:rgba(29,184,148,.2);color:#1db894}
+.lr.err .lbadge{background:rgba(220,60,60,.15);color:#e06060}
+.lr .ltime{font-weight:600}
+.lr.ok .ltime{color:#5de0a0}
+.lr.err .ltime{color:#e07070}
+.lr .lsub{color:#555;font-size:11px}
+
+#switch-panel{display:flex;flex-direction:column;align-items:flex-end;gap:8px}
+#switch-panel .sl{font-size:10px;color:#444;letter-spacing:.1em;text-transform:uppercase}
+#sw-btns{display:flex;gap:6px}
+.swb{
+  padding:10px 24px;border-radius:9px;font-size:13px;font-weight:500;
+  cursor:pointer;border:1px solid rgba(255,255,255,.1);
+  background:rgba(255,255,255,.05);color:#666;
+  transition:all .2s;letter-spacing:.02em;
+}
+.swb:hover{background:rgba(255,255,255,.1);color:#aaa}
+.swb.on-a{background:rgba(83,74,183,.3);border-color:#534AB7;color:#9a8aee}
+.swb.on-b{background:rgba(29,184,148,.2);border-color:#1db894;color:#4dcca8}
+
+/* Trial dots */
+#trial-dots{display:flex;gap:7px;align-items:center;margin-top:6px;justify-content:flex-end}
+.td{width:9px;height:9px;border-radius:50%;background:#1a1a2a;transition:all .3s}
+.td.done{background:#1db894}
+.td.cur{background:#7a6aee;transform:scale(1.25)}
+
+/* Flash */
+#flash{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-60%);
+  padding:18px 36px;border-radius:14px;text-align:center;
+  background:rgba(10,10,22,.95);border:1px solid rgba(255,255,255,.1);
+  pointer-events:none;opacity:0;transition:opacity .25s;z-index:200;
+  min-width:240px;
+}
+#flash.show{opacity:1}
+#flash .fm{font-size:26px;font-weight:800;margin-bottom:4px}
+#flash .fs{font-size:12px;color:#666}
+#flash.ok{border-color:rgba(29,184,148,.4)}
+#flash.ok .fm{color:#1db894}
+#flash.err{border-color:rgba(220,60,60,.3)}
+#flash.err .fm{color:#e07070}
+
+/* END screen */
+#end-screen{
+  position:absolute;inset:0;z-index:300;
+  background:rgba(6,6,16,.97);
+  display:none;align-items:center;justify-content:center;flex-direction:column;
+  gap:0;
+}
+#end-screen h2{font-size:24px;font-weight:700;margin-bottom:6px}
+#end-screen p{color:#555;font-size:13px;margin-bottom:32px}
+#results-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;width:380px;margin-bottom:28px}
+.rcard{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:16px}
+.rcard .rc-label{font-size:10px;color:#555;letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px}
+.rcard .rc-val{font-size:28px;font-weight:800}
+.rcard.a .rc-val{color:#7a6aee}
+.rcard.b .rc-val{color:#1db894}
+.rcard .rc-sub{font-size:11px;color:#444;margin-top:3px}
+.rcard.winner{border-color:rgba(255,200,50,.3);background:rgba(255,200,50,.04)}
+.rcard.winner .rc-label::after{content:' 🏆';font-size:12px}
+#end-screen button{
+  padding:12px 32px;border-radius:9px;font-size:14px;
+  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);
+  color:#aaa;cursor:pointer;transition:all .2s;
+}
+#end-screen button:hover{background:rgba(255,255,255,.1);color:#fff}
+</style>
+</head>
+<body>
+
+<!-- INTRO -->
+<div id="intro">
+  <div class="logo">🔬</div>
+  <h1>Diegetic UI Research</h1>
+  <p>Виртуал орчин дахь интерфэйсийн хэрэглэгчийн туршлагыг судлах туршилт.<br>2 нөхцөл тус бүрт 3 даалгавар гүйцэтгэнэ.</p>
+  <div class="meta-row">
+    <div class="meta-item"><div class="mv">2</div><div class="ml">Нөхцөл</div></div>
+    <div class="meta-item"><div class="mv">3</div><div class="ml">Оролдлого</div></div>
+    <div class="meta-item"><div class="mv">~5</div><div class="ml">Минут</div></div>
+  </div>
+  <div class="cond-preview">
+    <div class="cp a">А — Non-diegetic HUD</div>
+    <div class="cp b">В — Diegetic объект</div>
+  </div>
+  <button onclick="startStudy()">Туршилт эхлэх →</button>
+</div>
+
+<!-- MAIN HUD -->
+<div id="hud">
+  <div id="progress-bar"><div id="progress-fill"></div></div>
+
+  <div id="top-strip">
+    <div class="panel" id="cond-panel">
+      <div class="cp-label">Нөхцөл</div>
+      <div class="cp-title" id="cp-title">А — Non-diegetic HUD</div>
+      <div class="cp-task" id="cp-task">Цэснээс "Inventory" дарна уу</div>
+    </div>
+    <div class="panel" id="timer-panel">
+      <div class="tl">Хугацаа</div>
+      <div class="tv"><span id="t">0.0</span>s</div>
+      <div class="tt" id="tt">Оролдлого 1 / 3</div>
+    </div>
+  </div>
+
+  <div id="crosshair"></div>
+
+  <div id="bottom-strip">
+    <div class="panel" id="log-panel">
+      <div class="lhead">Үр дүн</div>
+      <div id="entries"></div>
+    </div>
+    <div id="switch-panel">
+      <div class="sl">Нөхцөл солих</div>
+      <div id="sw-btns">
+        <button class="swb on-a" onclick="setCond('A')">A — HUD</button>
+        <button class="swb" onclick="setCond('B')">B — Diegetic</button>
+      </div>
+      <div id="trial-dots">
+        <div class="td cur" id="d0"></div>
+        <div class="td" id="d1"></div>
+        <div class="td" id="d2"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="flash"><div class="fm" id="fm"></div><div class="fs" id="fs"></div></div>
+
+<!-- END -->
+<div id="end-screen">
+  <h2>Туршилт дууслаа ✓</h2>
+  <p>Оролцсонд баярлалаа. Доорх үр дүнг судлаачид өгнө үү.</p>
+  <div id="results-grid"></div>
+  <button onclick="location.reload()">Дахин эхлэх</button>
+</div>
+
+<!-- 3D SCENE -->
+<a-scene vr-mode-ui="enabled:true" renderer="antialias:true;logarithmicDepthBuffer:true">
+  <a-sky color="#060610"></a-sky>
+
+  <!-- Floor with subtle pattern -->
+  <a-plane position="0 0 0" rotation="-90 0 0" width="24" height="24"
+           material="color:#0c0c18;roughness:0.95"></a-plane>
+  <a-plane position="0 0.005 0" rotation="-90 0 0" width="24" height="24"
+           material="shader:flat;src:;color:#0e0e20;opacity:0.5;wireframe:true"></a-plane>
+
+  <!-- Walls -->
+  <a-box position="0 3 -9" width="18" height="6.1" depth="0.25"
+         material="color:#0a0a18;roughness:0.8"></a-box>
+  <a-box position="-9 3 0" width="0.25" height="6.1" depth="18"
+         material="color:#090916"></a-box>
+  <a-box position="9 3 0" width="0.25" height="6.1" depth="18"
+         material="color:#090916"></a-box>
+  <a-box position="0 6.05 0" width="18" height="0.1" depth="18"
+         material="color:#060610"></a-box>
+
+  <!-- Accent wall stripe -->
+  <a-box position="0 0.04 -8.86" width="18" height="0.08" depth="0.1"
+         material="shader:flat;color:#534AB7;opacity:0.6"></a-box>
+  <a-box position="-8.86 0.04 0" width="0.1" height="0.08" depth="18"
+         material="shader:flat;color:#534AB7;opacity:0.3"></a-box>
+
+  <!-- Ceiling lights -->
+  <a-cylinder position="-3 5.9 -4" radius="0.4" height="0.08"
+              material="shader:flat;color:#534AB7;opacity:0.9"></a-cylinder>
+  <a-cylinder position="3 5.9 -4" radius="0.4" height="0.08"
+              material="shader:flat;color:#1db894;opacity:0.9"></a-cylinder>
+  <a-cylinder position="0 5.9 -7" radius="0.4" height="0.08"
+              material="shader:flat;color:#7a6aee;opacity:0.7"></a-cylinder>
+
+  <a-light type="point" position="-3 5.5 -4" color="#534AB7" intensity="0.6" distance="10"></a-light>
+  <a-light type="point" position="3 5.5 -4" color="#1db894" intensity="0.4" distance="10"></a-light>
+  <a-light type="point" position="0 5.5 -7" color="#7a6aee" intensity="0.3" distance="10"></a-light>
+  <a-light type="ambient" color="#111122" intensity="1.5"></a-light>
+
+  <!-- Floor accent lines -->
+  <a-box position="0 0.006 -4" width="16" height="0.012" depth="0.025"
+         material="shader:flat;color:#534AB7;opacity:0.25"></a-box>
+  <a-box position="0 0.006 -7" width="16" height="0.012" depth="0.025"
+         material="shader:flat;color:#1db894;opacity:0.2"></a-box>
+
+  <!-- Env objects -->
+  <a-box position="-5 0.6 -5.5" width="0.8" height="1.2" depth="0.8"
+         material="color:#111128;metalness:0.4;roughness:0.6"></a-box>
+  <a-box position="-5 1.26 -5.5" width="0.82" height="0.06" depth="0.82"
+         material="shader:flat;color:#534AB7;opacity:0.5"></a-box>
+
+  <a-cylinder position="5 0.7 -5" radius="0.35" height="1.4"
+              material="color:#0f1f18;metalness:0.3;roughness:0.7"></a-cylinder>
+  <a-cylinder position="5 1.4 -5" radius="0.36" height="0.06"
+              material="shader:flat;color:#1db894;opacity:0.5"></a-cylinder>
+
+  <a-box position="0 0.35 -7.8" width="2.4" height="0.7" depth="1.2"
+         material="color:#0d0d1a;metalness:0.7;roughness:0.2"></a-box>
+  <a-box position="0 0.725 -7.8" width="2.4" height="0.05" depth="1.2"
+         material="shader:flat;color:#7a6aee;opacity:0.3"></a-box>
+
+  <!-- Camera rig -->
+  <a-entity id="rig" position="0 1.65 1.8">
+    <a-camera look-controls wasd-controls="acceleration:22">
+      <a-cursor color="#fff" opacity="0.4" raycaster="objects:.btn" fuse="false"
+                geometry="primitive:ring;radiusInner:0.012;radiusOuter:0.018"
+                material="shader:flat;color:#fff;opacity:0.5"></a-cursor>
+    </a-camera>
+  </a-entity>
+  <a-entity id="rhand"
+    oculus-touch-controls="hand:right"
+    raycaster="objects:.btn;far:16;lineColor:#7a6aee;lineOpacity:0.5">
+  </a-entity>
+  <a-entity oculus-touch-controls="hand:left"></a-entity>
+
+  <!-- ══════════════════════════════════════
+       CONDITION A — NON-DIEGETIC HUD
+  ══════════════════════════════════════ -->
+  <a-entity id="hud-a" position="0 1.65 1.8">
+
+    <!-- Stats — top left -->
+    <a-entity position="-0.9 0.54 -1.65">
+      <a-plane width="0.5" height="0.25"
+               material="shader:flat;color:#060612;opacity:0.94"></a-plane>
+      <a-plane position="0 0.125 0" width="0.5" height="0.025"
+               material="shader:flat;color:#534AB7;opacity:1"></a-plane>
+      <a-text value="STATS" position="0 0.105 0.003" color="#7a6aee"
+              width="0.58" align="center" font="roboto"></a-text>
+      <a-text value="HP ████████░░ 85" position="0 0.03 0.003" color="#5de0a0"
+              width="0.7" align="center" font="roboto"></a-text>
+      <a-text value="Score 420  ·  Level 3" position="0 -0.055 0.003" color="#666"
+              width="0.64" align="center" font="roboto"></a-text>
+    </a-entity>
+
+    <!-- Menu — right side -->
+    <a-entity position="0.9 0.4 -1.65">
+      <!-- Panel bg -->
+      <a-plane width="0.44" height="0.38"
+               material="shader:flat;color:#060612;opacity:0.94"></a-plane>
+      <!-- Header bar -->
+      <a-plane position="0 0.19 0.001" width="0.44" height="0.025"
+               material="shader:flat;color:#534AB7;opacity:1"></a-plane>
+      <a-text value="MENU" position="0 0.17 0.004" color="#9a8aee"
+              width="0.6" align="center" font="roboto"></a-text>
+
+      <!-- Inventory -->
+      <a-entity class="btn" data-label="Inventory" data-cond="A" position="0 0.08 0.004">
+        <a-plane width="0.38" height="0.075"
+                 material="shader:flat;color:#3a3380;opacity:1" class="bg"></a-plane>
+        <a-plane position="-0.19 0 0" width="0.006" height="0.075"
+                 material="shader:flat;color:#534AB7;opacity:1"></a-plane>
+        <a-text value="Inventory" position="0.01 0 0.003" color="#bba8ff"
+                width="0.65" align="center" font="roboto"></a-text>
+      </a-entity>
+
+      <!-- Map -->
+      <a-entity class="btn" data-label="Map" data-cond="A" position="0 -0.025 0.004">
+        <a-plane width="0.38" height="0.075"
+                 material="shader:flat;color:#1a2040;opacity:1" class="bg"></a-plane>
+        <a-plane position="-0.19 0 0" width="0.006" height="0.075"
+                 material="shader:flat;color:#2a5a8a;opacity:1"></a-plane>
+        <a-text value="Map" position="0.01 0 0.003" color="#7ab0cc"
+                width="0.65" align="center" font="roboto"></a-text>
+      </a-entity>
+
+      <!-- Settings -->
+      <a-entity class="btn" data-label="Settings" data-cond="A" position="0 -0.13 0.004">
+        <a-plane width="0.38" height="0.075"
+                 material="shader:flat;color:#182818;opacity:1" class="bg"></a-plane>
+        <a-plane position="-0.19 0 0" width="0.006" height="0.075"
+                 material="shader:flat;color:#2a5a3a;opacity:1"></a-plane>
+        <a-text value="Settings" position="0.01 0 0.003" color="#7abb8a"
+                width="0.65" align="center" font="roboto"></a-text>
+      </a-entity>
+    </a-entity>
+  </a-entity>
+
+  <!-- ══════════════════════════════════════
+       CONDITION B — DIEGETIC TABLE DEVICE
+  ══════════════════════════════════════ -->
+  <a-entity id="diegetic-b" visible="false">
+
+    <!-- Table -->
+    <a-box position="-3.2 0.46 -4.2" width="1.5" height="0.055" depth="1.1"
+           material="color:#2a1e12;roughness:0.6;metalness:0.15"></a-box>
+    <!-- Table edge glow -->
+    <a-box position="-3.2 0.488 -4.2" width="1.51" height="0.008" depth="1.11"
+           material="shader:flat;color:#1db894;opacity:0.2"></a-box>
+    <!-- Legs -->
+    <a-cylinder position="-3.7 0.23 -3.7" radius="0.055" height="0.46" color="#1a1208"></a-cylinder>
+    <a-cylinder position="-2.7 0.23 -3.7" radius="0.055" height="0.46" color="#1a1208"></a-cylinder>
+    <a-cylinder position="-3.7 0.23 -4.7" radius="0.055" height="0.46" color="#1a1208"></a-cylinder>
+    <a-cylinder position="-2.7 0.23 -4.7" radius="0.055" height="0.46" color="#1a1208"></a-cylinder>
+
+    <!-- Device base -->
+    <a-box position="-3.2 0.524 -4.2" width="0.72" height="0.05" depth="0.52"
+           material="color:#0a0a14;roughness:0.05;metalness:0.95"></a-box>
+    <!-- Device border -->
+    <a-box position="-3.2 0.525 -4.2" width="0.73" height="0.052" depth="0.53"
+           material="shader:flat;color:#1db894;opacity:0.25"></a-box>
+
+    <!-- Screen surface -->
+    <a-plane position="-3.2 0.552 -4.2" rotation="-90 0 0"
+             width="0.64" height="0.44"
+             material="shader:flat;color:#030310;opacity:1"></a-plane>
+
+    <!-- Screen grid -->
+    <a-plane position="-3.2 0.553 -4.2" rotation="-90 0 0"
+             width="0.64" height="0.44"
+             material="shader:flat;color:#0a0a22;opacity:0.5;wireframe:true"></a-plane>
+
+    <!-- Header -->
+    <a-plane position="-3.2 0.554 -4.0" rotation="-90 0 0"
+             width="0.64" height="0.07"
+             material="shader:flat;color:#0e2218;opacity:1"></a-plane>
+    <a-text value="DEVICE MENU" position="-3.2 0.556 -4.0"
+            rotation="-90 0 0" color="#1db894"
+            width="1.1" align="center" font="roboto"></a-text>
+
+    <!-- Divider line -->
+    <a-plane position="-3.2 0.554 -4.04" rotation="-90 0 0"
+             width="0.64" height="0.006"
+             material="shader:flat;color:#1db894;opacity:0.5"></a-plane>
+
+    <!-- Inventory -->
+    <a-entity class="btn" data-label="Inventory" data-cond="B"
+              position="-3.2 0.554 -4.18">
+      <a-plane rotation="-90 0 0" width="0.58" height="0.082"
+               material="shader:flat;color:#0e1e30;opacity:1" class="bg"></a-plane>
+      <a-plane rotation="-90 0 0" position="-0.29 0.001 0" width="0.007" height="0.082"
+               material="shader:flat;color:#534AB7;opacity:1"></a-plane>
+      <a-text value="Inventory" position="0.01 0.003 0"
+              rotation="-90 0 0" color="#9a8aee"
+              width="1.05" align="center" font="roboto"></a-text>
+    </a-entity>
+
+    <!-- Map -->
+    <a-entity class="btn" data-label="Map" data-cond="B"
+              position="-3.2 0.554 -4.28">
+      <a-plane rotation="-90 0 0" width="0.58" height="0.082"
+               material="shader:flat;color:#0a1820;opacity:1" class="bg"></a-plane>
+      <a-plane rotation="-90 0 0" position="-0.29 0.001 0" width="0.007" height="0.082"
+               material="shader:flat;color:#1a5a8a;opacity:1"></a-plane>
+      <a-text value="Map" position="0.01 0.003 0"
+              rotation="-90 0 0" color="#5a90bb"
+              width="1.05" align="center" font="roboto"></a-text>
+    </a-entity>
+
+    <!-- Settings -->
+    <a-entity class="btn" data-label="Settings" data-cond="B"
+              position="-3.2 0.554 -4.38">
+      <a-plane rotation="-90 0 0" width="0.58" height="0.082"
+               material="shader:flat;color:#0a1810;opacity:1" class="bg"></a-plane>
+      <a-plane rotation="-90 0 0" position="-0.29 0.001 0" width="0.007" height="0.082"
+               material="shader:flat;color:#1a5a2a;opacity:1"></a-plane>
+      <a-text value="Settings" position="0.01 0.003 0"
+              rotation="-90 0 0" color="#5abb7a"
+              width="1.05" align="center" font="roboto"></a-text>
+    </a-entity>
+
+    <!-- Screen ambient -->
+    <a-sphere position="-3.2 0.56 -4.2" radius="0.45"
+              material="shader:flat;color:#1db894;opacity:0.04"></a-sphere>
+
+    <!-- Guide arrow -->
+    <a-entity position="-3.2 1.7 -4.2">
+      <a-plane width="1.0" height="0.2"
+               material="shader:flat;color:#06100e;opacity:0.9"></a-plane>
+      <a-plane position="0 0.1 0" width="1.0" height="0.004"
+               material="shader:flat;color:#1db894;opacity:0.5"></a-plane>
+      <a-text value="▼  Device — Цэс энд байна"
+              position="0 0 0.005" color="#1db894"
+              width="1.6" align="center" font="roboto"></a-text>
+    </a-entity>
+    <a-cone position="-3.2 1.42 -4.2" rotation="180 0 0"
+            radius-bottom="0.08" radius-top="0" height="0.24"
+            material="shader:flat;color:#1db894;opacity:0.55"></a-cone>
+  </a-entity>
+
+  <!-- Result flash in VR -->
+  <a-entity id="vr-flash" position="0 2.1 -3" visible="false">
+    <a-plane width="2.0" height="0.45"
+             material="shader:flat;color:#060610;opacity:0.97"></a-plane>
+    <a-plane position="0 0.225 0" width="2.0" height="0.008"
+             material="shader:flat;color:#534AB7;opacity:0.6" id="vf-bar"></a-plane>
+    <a-text id="vf-txt" value="" position="0 0 0.012"
+            color="#5de0a0" width="3.4" align="center" font="roboto"></a-text>
+  </a-entity>
+
+</a-scene>
+
+<script>
+let cond='A', ts=null, ti=null, done=false, trial=0;
+const MAX=3, TGT='Inventory', res={A:[],B:[]}, all=[];
+
+function tick(){
+  if(!done) document.getElementById('t').textContent=
+    ((performance.now()-ts)/1000).toFixed(1);
+}
+function startTimer(){ clearInterval(ti); ts=performance.now(); done=false; ti=setInterval(tick,100); }
+
+function updateProgress(){
+  const total=MAX*2;
+  const done_n=res.A.length+res.B.length;
+  document.getElementById('progress-fill').style.width=(done_n/total*100)+'%';
+  for(let i=0;i<3;i++){
+    const d=document.getElementById('d'+i);
+    if(!d) return;
+    d.className='td'+(i<trial?' done':i===trial?' cur':'');
+  }
+}
+
+function showFlash(msg,sub,type){
+  const f=document.getElementById('flash');
+  document.getElementById('fm').textContent=msg;
+  document.getElementById('fs').textContent=sub||'';
+  f.className='show '+type;
+  clearTimeout(f._t);
+  f._t=setTimeout(()=>f.className='',2000);
+}
+
+function showVRFlash(msg,col,barCol){
+  const p=document.getElementById('vr-flash');
+  const tx=document.getElementById('vf-txt');
+  const bar=document.getElementById('vf-bar');
+  tx.setAttribute('value',msg);
+  tx.setAttribute('color',col||'#5de0a0');
+  if(bar) bar.setAttribute('material','color',barCol||'#534AB7');
+  p.setAttribute('visible',true);
+  clearTimeout(p._t);
+  p._t=setTimeout(()=>p.setAttribute('visible',false),2000);
+}
+
+function addLog(msg,time,type){
+  const d=document.createElement('div');
+  d.className='lr '+type;
+  d.innerHTML=`<span class="lbadge">${cond}</span><span class="ltime">${time}s</span><span class="lsub">${msg}</span>`;
+  document.getElementById('entries').prepend(d);
+}
+
+function showEndScreen(){
+  document.getElementById('hud').style.display='none';
+  const g=document.getElementById('results-grid');
+  const avgA=res.A.length?(res.A.reduce((a,b)=>a+b,0)/res.A.length).toFixed(2):'—';
+  const avgB=res.B.length?(res.B.reduce((a,b)=>a+b,0)/res.B.length).toFixed(2):'—';
+  const winA=res.A.length&&res.B.length&&parseFloat(avgA)<parseFloat(avgB);
+  const winB=res.A.length&&res.B.length&&parseFloat(avgB)<parseFloat(avgA);
+  g.innerHTML=`
+    <div class="rcard a ${winA?'winner':''}">
+      <div class="rc-label">Нөхцөл А — HUD</div>
+      <div class="rc-val">${avgA}s</div>
+      <div class="rc-sub">Дундаж task time</div>
+    </div>
+    <div class="rcard b ${winB?'winner':''}">
+      <div class="rc-label">Нөхцөл В — Diegetic</div>
+      <div class="rc-val">${avgB}s</div>
+      <div class="rc-sub">Дундаж task time</div>
+    </div>
+    <div class="rcard a" style="border-color:rgba(83,74,183,.2)">
+      <div class="rc-label">А оролдлогууд</div>
+      <div class="rc-val" style="font-size:16px">${res.A.map(v=>v+'s').join(' · ')||'—'}</div>
+    </div>
+    <div class="rcard b" style="border-color:rgba(29,184,148,.2)">
+      <div class="rc-label">В оролдлогууд</div>
+      <div class="rc-val" style="font-size:16px">${res.B.map(v=>v+'s').join(' · ')||'—'}</div>
+    </div>
+  `;
+  document.getElementById('end-screen').style.display='flex';
+}
+
+function hit(label,bc){
+  if(bc!==cond) return;
+  clearInterval(ti); done=true;
+  const s=((performance.now()-ts)/1000).toFixed(2);
+  if(label===TGT){
+    trial++; res[cond].push(+s);
+    const avg=(res[cond].reduce((a,b)=>a+b,0)/res[cond].length).toFixed(2);
+    addLog(`✓ — avg ${avg}s`,s,'ok');
+    updateProgress();
+    if(trial>=MAX){
+      if(res.A.length===MAX&&res.B.length===MAX){
+        setTimeout(showEndScreen,1200);
+      } else {
+        showFlash(`Нөхцөл ${cond} дууслаа!`,`Нөгөө нөхцөл солино уу`,'ok');
+        showVRFlash(`Нөхцөл ${cond} дууслаа  ·  avg ${avg}s`,'#1db894','#1db894');
+        document.getElementById('cp-task').textContent='✓ Дууссан — нөгөө нөхцөл солино уу';
+      }
+    } else {
+      showFlash(`✓  ${s}s`,`Оролдлого ${trial+1} / ${MAX}`,'ok');
+      showVRFlash(`✓  ${s}s`,'#5de0a0','#534AB7');
+      document.getElementById('tt').textContent=`Оролдлого ${trial+1} / ${MAX}`;
+      setTimeout(startTimer,600);
+    }
+  } else {
+    addLog(`"${label}" — буруу`,s,'err');
+    showFlash(`✗  "${label}"`,`Зөв товчийг дарна уу`,'err');
+    showVRFlash(`✗  "${label}" — буруу`,'#e07070','#883030');
+    setTimeout(startTimer,400);
+  }
+}
+
+function setCond(c){
+  cond=c; trial=0; done=false; clearInterval(ti);
+  document.getElementById('t').textContent='0.0';
+  document.getElementById('hud-a').setAttribute('visible',c==='A');
+  document.getElementById('diegetic-b').setAttribute('visible',c==='B');
+  const cfg={
+    A:{title:'А — Non-diegetic HUD',task:'"Inventory" товчийг олоод дарна уу (баруун тийш харна)'},
+    B:{title:'В — Diegetic объект',task:'"Inventory" товчийг олоод дарна уу (зүүн ширээн дээр)'}
+  };
+  document.getElementById('cp-title').textContent=cfg[c].title;
+  document.getElementById('cp-task').textContent=cfg[c].task;
+  document.getElementById('tt').textContent=`Оролдлого 1 / ${MAX}`;
+  document.querySelectorAll('.swb').forEach(b=>{
+    b.className='swb'+(b.textContent.startsWith(c)?' on-'+c.toLowerCase():'');
+  });
+  updateProgress(); setTimeout(startTimer,300);
+}
+
+function startStudy(){
+  document.getElementById('intro').style.display='none';
+  document.getElementById('hud').style.display='block';
+  setCond('A');
+}
+
+AFRAME.registerComponent('clicker',{
+  init(){
+    const el=this.el,lb=el.getAttribute('data-label'),bc=el.getAttribute('data-cond');
+    el.addEventListener('click',()=>hit(lb,bc));
+    el.addEventListener('triggerdown',()=>hit(lb,bc));
+    el.addEventListener('mouseenter',()=>{
+      const bg=el.querySelector('.bg');
+      if(bg) bg.setAttribute('material','opacity',0.45);
+    });
+    el.addEventListener('mouseleave',()=>{
+      const bg=el.querySelector('.bg');
+      if(bg) bg.setAttribute('material','opacity',1);
+    });
+  }
+});
+
+AFRAME.registerComponent('ctrl-fwd',{
+  init(){
+    this.el.addEventListener('triggerdown',()=>{
+      const r=this.el.components.raycaster;
+      if(r&&r.intersectedEls.length) r.intersectedEls[0].emit('click');
+    });
+  }
+});
+
+document.querySelector('a-scene').addEventListener('loaded',()=>{
+  document.querySelectorAll('.btn').forEach(el=>el.setAttribute('clicker',''));
+  const rh=document.getElementById('rhand');
+  if(rh) rh.setAttribute('ctrl-fwd','');
+});
+
+document.addEventListener('keydown',e=>{
+  if(e.key==='1') setCond('A');
+  if(e.key==='2') setCond('B');
+  if(e.key==='r'||e.key==='R') setCond(cond);
+});
+</script>
+</body>
+</html>
