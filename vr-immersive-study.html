@@ -419,17 +419,17 @@ h1 span{background:linear-gradient(135deg,var(--pul),var(--tel));-webkit-backgro
   <!-- Far wall console -->
   <a-box position="0 1.5 -9.3" width="3.2" height="1.2" depth="0.12" material="color:#09091e;metalness:0.7"></a-box>
   <a-plane position="0 1.5 -9.22" width="2.8" height="0.9" material="shader:flat;color:#04040e"></a-plane>
-  <a-text value="RESEARCH LAB — UI COMPARISON STUDY ACTIVE" position="0 1.62 -9.18" color="#5b4fe8" opacity="0.5" width="3.0" align="center" font="roboto"></a-text>
+  <a-text value="RESEARCH LAB — UI COMPARISON STUDY ACTIVE" position="0 1.62 -9.18" color="#5b4fe8" opacity="0.5" width="3.0" align="center" font="mozillavr"></a-text>
 
   <!-- Camera -->
   <a-entity id="rig" position="0 1.65 2.2">
     <a-camera id="cam" look-controls wasd-controls="acceleration:22">
-      <!-- Cursor for Condition B only -->
+      <!-- Cursor — always visible, targets btn3d -->
       <a-cursor id="cur3d"
-        raycaster="objects:.btn3d;near:0.1;far:25"
+        raycaster="objects:.btn3d;near:0.05;far:30"
         fuse="false"
-        geometry="primitive:ring;radiusInner:0.012;radiusOuter:0.018"
-        material="shader:flat;color:#4de8b0;opacity:0.7">
+        geometry="primitive:ring;radiusInner:0.014;radiusOuter:0.022"
+        material="shader:flat;color:#ffffff;opacity:0.8">
       </a-cursor>
     </a-camera>
   </a-entity>
@@ -478,60 +478,64 @@ h1 span{background:linear-gradient(135deg,var(--pul),var(--tel));-webkit-backgro
              material="shader:flat;color:#081a10;opacity:0.3;wireframe:true"></a-plane>
 
     <!-- Screen header -->
-    <a-plane position="-3.2 2.12 -3.41" width="0.73" height="0.1"
+    <a-plane position="-3.2 2.12 -3.405" width="0.73" height="0.1"
              material="shader:flat;color:#051510;opacity:1"></a-plane>
-    <a-text value="DEVICE MENU" position="-3.2 2.12 -3.36"
-            color="#1cc994" width="1.5" align="center"></a-text>
+    <a-entity position="-3.2 2.12 -3.39"
+              text="value: DEVICE MENU; color: #1cc994; align: center; anchor: center; width: 1.4; font: mozillavr"></a-entity>
     <!-- Divider -->
-    <a-plane position="-3.2 2.065 -3.41" width="0.73" height="0.005"
-             material="shader:flat;color:#1cc994;opacity:0.4"></a-plane>
+    <a-plane position="-3.2 2.065 -3.40" width="0.73" height="0.005"
+             material="shader:flat;color:#1cc994;opacity:0.5"></a-plane>
 
-    <!-- ── 5 BUTTONS ── -->
+    <!-- ══ 5 BUTTONS ══
+         Plane = geometry (raycaster дарна)
+         Entity text = тусдаа 3cm урагш → z-fighting үгүй
+         font: mozillavr = A-Frame дотор суурилуулсан, CDN хэрэггүй
+    ══ -->
 
     <!-- Character -->
     <a-plane class="btn3d" data-label="Character"
-             position="-3.2 2.0 -3.41" width="0.66" height="0.082"
-             material="shader:flat;color:#0e1828;opacity:1"></a-plane>
-    <a-plane position="-3.53 2.0 -3.405" width="0.006" height="0.082"
-             material="shader:flat;color:#1a4888;opacity:1"></a-plane>
-    <a-entity position="-3.2 2.0 -3.33"
-              text="value: Character; color: #aaddff; width: 1.4; align: center; wrapCount: 20"></a-entity>
+             position="-3.2 2.0 -3.405" width="0.66" height="0.096"
+             material="shader:flat;color:#132038;opacity:1"></a-plane>
+    <a-plane position="-3.536 2.0 -3.40" width="0.007" height="0.096"
+             material="shader:flat;color:#2255aa;opacity:1"></a-plane>
+    <a-entity position="-3.2 2.0 -3.37"
+              text="value: Character; color: #aaddff; align: center; anchor: center; width: 1.4; font: mozillavr"></a-entity>
 
-    <!-- Inventory (TARGET) -->
+    <!-- Inventory -->
     <a-plane class="btn3d" data-label="Inventory"
-             position="-3.2 1.9 -3.41" width="0.66" height="0.082"
-             material="shader:flat;color:#0c1630;opacity:1"></a-plane>
-    <a-plane position="-3.53 1.9 -3.405" width="0.006" height="0.082"
+             position="-3.2 1.89 -3.405" width="0.66" height="0.096"
+             material="shader:flat;color:#0e1a3a;opacity:1"></a-plane>
+    <a-plane position="-3.536 1.89 -3.40" width="0.007" height="0.096"
              material="shader:flat;color:#5b4fe8;opacity:1"></a-plane>
-    <a-entity position="-3.2 1.9 -3.33"
-              text="value: Inventory; color: #ffffff; width: 1.4; align: center; wrapCount: 20"></a-entity>
+    <a-entity position="-3.2 1.89 -3.37"
+              text="value: Inventory; color: #c8b8ff; align: center; anchor: center; width: 1.4; font: mozillavr"></a-entity>
 
     <!-- Map -->
     <a-plane class="btn3d" data-label="Map"
-             position="-3.2 1.8 -3.41" width="0.66" height="0.082"
-             material="shader:flat;color:#081620;opacity:1"></a-plane>
-    <a-plane position="-3.53 1.8 -3.405" width="0.006" height="0.082"
-             material="shader:flat;color:#1a4878;opacity:1"></a-plane>
-    <a-entity position="-3.2 1.8 -3.33"
-              text="value: Map; color: #aaccee; width: 1.4; align: center; wrapCount: 20"></a-entity>
+             position="-3.2 1.78 -3.405" width="0.66" height="0.096"
+             material="shader:flat;color:#0a1a28;opacity:1"></a-plane>
+    <a-plane position="-3.536 1.78 -3.40" width="0.007" height="0.096"
+             material="shader:flat;color:#1a5080;opacity:1"></a-plane>
+    <a-entity position="-3.2 1.78 -3.37"
+              text="value: Map; color: #88ccee; align: center; anchor: center; width: 1.4; font: mozillavr"></a-entity>
 
     <!-- Settings -->
     <a-plane class="btn3d" data-label="Settings"
-             position="-3.2 1.7 -3.41" width="0.66" height="0.082"
-             material="shader:flat;color:#08160a;opacity:1"></a-plane>
-    <a-plane position="-3.53 1.7 -3.405" width="0.006" height="0.082"
-             material="shader:flat;color:#185828;opacity:1"></a-plane>
-    <a-entity position="-3.2 1.7 -3.33"
-              text="value: Settings; color: #aaddaa; width: 1.4; align: center; wrapCount: 20"></a-entity>
+             position="-3.2 1.67 -3.405" width="0.66" height="0.096"
+             material="shader:flat;color:#0a1c0c;opacity:1"></a-plane>
+    <a-plane position="-3.536 1.67 -3.40" width="0.007" height="0.096"
+             material="shader:flat;color:#1a6028;opacity:1"></a-plane>
+    <a-entity position="-3.2 1.67 -3.37"
+              text="value: Settings; color: #88dd88; align: center; anchor: center; width: 1.4; font: mozillavr"></a-entity>
 
     <!-- Quest Log -->
     <a-plane class="btn3d" data-label="Quest Log"
-             position="-3.2 1.6 -3.41" width="0.66" height="0.082"
-             material="shader:flat;color:#181208;opacity:1"></a-plane>
-    <a-plane position="-3.53 1.6 -3.405" width="0.006" height="0.082"
-             material="shader:flat;color:#887018;opacity:1"></a-plane>
-    <a-entity position="-3.2 1.6 -3.33"
-              text="value: Quest Log; color: #eedd99; width: 1.4; align: center; wrapCount: 20"></a-entity>
+             position="-3.2 1.56 -3.405" width="0.66" height="0.096"
+             material="shader:flat;color:#1c1408;opacity:1"></a-plane>
+    <a-plane position="-3.536 1.56 -3.40" width="0.007" height="0.096"
+             material="shader:flat;color:#886618;opacity:1"></a-plane>
+    <a-entity position="-3.2 1.56 -3.37"
+              text="value: Quest Log; color: #ddcc66; align: center; anchor: center; width: 1.4; font: mozillavr"></a-entity>
 
     <!-- Screen glow light -->
     <a-light type="point" position="-3.2 1.72 -3.2"
@@ -546,8 +550,8 @@ h1 span{background:linear-gradient(135deg,var(--pul),var(--tel));-webkit-backgro
                  material="shader:flat;color:#030e08;opacity:0.92"></a-plane>
         <a-plane position="0 0.13 0.001" width="1.3" height="0.005"
                  material="shader:flat;color:#1cc994;opacity:0.4"></a-plane>
-        <a-entity position="-3.2 2.55 -3.42"
-                  text="value: Терминал энд байна; color: #1cc994; width: 2.0; align: center"></a-entity>
+        <a-entity position="-3.2 2.55 -3.38"
+                  text="value: Терминал энд байна; color: #1cc994; width: 2.0; align: center; font: mozillavr"></a-entity>
       </a-entity>
       <a-cone position="-3.2 2.22 -3.5" rotation="180 0 0"
               radius-bottom="0.09" radius-top="0" height="0.28"
@@ -560,7 +564,7 @@ h1 span{background:linear-gradient(135deg,var(--pul),var(--tel));-webkit-backgro
   <a-entity id="vrfl" position="0 2.3 -3" visible="false">
     <a-plane width="2.3" height="0.5" material="shader:flat;color:#04040e;opacity:0.96"></a-plane>
     <a-text id="vftxt" value="" position="0 0 0.016"
-            color="#4de8b0" width="3.8" align="center" font="roboto"></a-text>
+            color="#4de8b0" width="3.8" align="center" font="mozillavr"></a-text>
   </a-entity>
 
 </a-scene>
@@ -852,11 +856,20 @@ function showEnd(){
 // ── A-Frame ───────────────────────────────────────
 AFRAME.registerComponent('diegetic-btn',{
   init(){
-    const el=this.el,label=el.getAttribute('data-label');
+    const el=this.el, label=el.getAttribute('data-label');
+    // Store original color
+    const origColor=el.getAttribute('material').color||'#0c1630';
     el.addEventListener('click',()=>{if(cond!=='B'||phase!==1)return;hitPhase1(label);});
     el.addEventListener('triggerdown',()=>{if(cond!=='B'||phase!==1)return;hitPhase1(label);});
-    el.addEventListener('mouseenter',()=>el.setAttribute('material','opacity',0.55));
-    el.addEventListener('mouseleave',()=>el.setAttribute('material','opacity',1));
+    el.addEventListener('mouseenter',()=>{
+      el.setAttribute('material','opacity',0.75);
+      // brighten text on hover
+      const txt=el.getAttribute('text');
+      if(txt) el.setAttribute('text','color','#ffffff');
+    });
+    el.addEventListener('mouseleave',()=>{
+      el.setAttribute('material','opacity',1);
+    });
   }
 });
 AFRAME.registerComponent('ctrl-ray',{
