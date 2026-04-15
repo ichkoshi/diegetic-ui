@@ -372,6 +372,10 @@ h1 span{background:linear-gradient(135deg,var(--pul),var(--tel));-webkit-backgro
 <!-- ════════════════════════════════════
      A-FRAME SCENE
 ════════════════════════════════════ -->
+<!-- Hidden canvases for terminal texture -->
+<canvas id="term-canvas" width="512" height="640" style="display:none"></canvas>
+<canvas id="guide-canvas" width="512" height="128" style="display:none"></canvas>
+
 <a-scene vr-mode-ui="enabled:true" renderer="antialias:true;logarithmicDepthBuffer:true">
   <a-sky color="#04040e"></a-sky>
 
@@ -440,120 +444,63 @@ h1 span{background:linear-gradient(135deg,var(--pul),var(--tel));-webkit-backgro
   <a-entity oculus-touch-controls="hand:left"></a-entity>
 
   <!-- ══════════════════════════════════
-       CONDITION B: DIEGETIC TERMINAL KIOSK
-       Босоо терминал — зүүн тийш эргэж харна
-       Position: (-3.2, 0, -3.5), screen faces +Z (toward player)
+       CONDITION B: DIEGETIC TERMINAL — Canvas texture
+       Текстийг HTML Canvas-аар зурна → CDN хэрэггүй, 100% харагдана
+       Терминал дээшлүүлсэн: y=1.95 (нүдний өндөрт)
   ══════════════════════════════════ -->
   <a-entity id="diegetic-b" visible="false">
 
-    <!-- Terminal base pillar -->
-    <a-cylinder position="-3.2 0.7 -3.5"
-                radius="0.12" height="1.4"
+    <!-- Pillar -->
+    <a-cylinder position="-3.2 0.9 -3.5" radius="0.1" height="1.8"
                 material="color:#08080e;metalness:0.9;roughness:0.1"></a-cylinder>
-    <a-cylinder position="-3.2 0.02 -3.5"
-                radius="0.32" height="0.04"
+    <a-cylinder position="-3.2 0.02 -3.5" radius="0.28" height="0.04"
                 material="color:#0c0c1c;metalness:0.8"></a-cylinder>
 
-    <!-- Terminal housing -->
-    <a-box position="-3.2 1.72 -3.5"
-           width="0.85" height="1.05" depth="0.14"
+    <!-- Housing -->
+    <a-box position="-3.2 1.95 -3.5" width="0.92" height="1.2" depth="0.13"
            material="color:#07070f;metalness:0.88;roughness:0.08"></a-box>
-    <!-- Housing edge glow -->
-    <a-box position="-3.2 1.72 -3.44"
-           width="0.87" height="1.07" depth="0.005"
-           material="shader:flat;color:#1cc994;opacity:0.22"></a-box>
+    <a-box position="-3.2 1.95 -3.44" width="0.94" height="1.22" depth="0.005"
+           material="shader:flat;color:#1cc994;opacity:0.25"></a-box>
 
-    <!-- Screen bezel -->
-    <a-box position="-3.2 1.72 -3.43"
-           width="0.79" height="0.96" depth="0.005"
-           material="shader:flat;color:#02020a;opacity:1"></a-box>
+    <!-- Canvas texture screen — нэг том plane дээр бүх текст -->
+    <a-plane id="term-screen" position="-3.2 1.95 -3.43"
+             width="0.80" height="1.06"
+             material="shader:flat;src:#term-canvas;color:#ffffff"></a-plane>
 
-    <!-- Screen bg -->
-    <a-plane id="screen-bg" position="-3.2 1.72 -3.42"
-             width="0.73" height="0.88"
-             material="shader:flat;color:#02020a;opacity:1"></a-plane>
-
-    <!-- Screen scanlines -->
-    <a-plane position="-3.2 1.72 -3.415" width="0.73" height="0.88"
-             material="shader:flat;color:#081a10;opacity:0.3;wireframe:true"></a-plane>
-
-    <!-- Screen header -->
-    <a-plane position="-3.2 2.12 -3.405" width="0.73" height="0.1"
-             material="shader:flat;color:#051510;opacity:1"></a-plane>
-    <a-entity position="-3.2 2.12 -3.39"
-              text="value: DEVICE MENU; color: #1cc994; align: center; anchor: center; width: 1.4; font: mozillavr"></a-entity>
-    <!-- Divider -->
-    <a-plane position="-3.2 2.065 -3.40" width="0.73" height="0.005"
-             material="shader:flat;color:#1cc994;opacity:0.5"></a-plane>
-
-    <!-- ══ 5 BUTTONS ══
-         Plane = geometry (raycaster дарна)
-         Entity text = тусдаа 3cm урагш → z-fighting үгүй
-         font: mozillavr = A-Frame дотор суурилуулсан, CDN хэрэггүй
-    ══ -->
-
-    <!-- Character -->
+    <!-- Invisible clickable planes ON TOP of screen (raycaster target) -->
+    <!-- y positions: screen center 1.95, height 1.06 → top ~2.48, buttons inside -->
     <a-plane class="btn3d" data-label="Character"
-             position="-3.2 2.0 -3.405" width="0.66" height="0.096"
-             material="shader:flat;color:#132038;opacity:1"></a-plane>
-    <a-plane position="-3.536 2.0 -3.40" width="0.007" height="0.096"
-             material="shader:flat;color:#2255aa;opacity:1"></a-plane>
-    <a-entity position="-3.2 2.0 -3.37"
-              text="value: Character; color: #aaddff; align: center; anchor: center; width: 1.4; font: mozillavr"></a-entity>
+             position="-3.2 2.27 -3.41" width="0.76" height="0.175"
+             material="shader:flat;color:#000000;opacity:0.001"></a-plane>
 
-    <!-- Inventory -->
     <a-plane class="btn3d" data-label="Inventory"
-             position="-3.2 1.89 -3.405" width="0.66" height="0.096"
-             material="shader:flat;color:#0e1a3a;opacity:1"></a-plane>
-    <a-plane position="-3.536 1.89 -3.40" width="0.007" height="0.096"
-             material="shader:flat;color:#5b4fe8;opacity:1"></a-plane>
-    <a-entity position="-3.2 1.89 -3.37"
-              text="value: Inventory; color: #c8b8ff; align: center; anchor: center; width: 1.4; font: mozillavr"></a-entity>
+             position="-3.2 2.08 -3.41" width="0.76" height="0.175"
+             material="shader:flat;color:#000000;opacity:0.001"></a-plane>
 
-    <!-- Map -->
     <a-plane class="btn3d" data-label="Map"
-             position="-3.2 1.78 -3.405" width="0.66" height="0.096"
-             material="shader:flat;color:#0a1a28;opacity:1"></a-plane>
-    <a-plane position="-3.536 1.78 -3.40" width="0.007" height="0.096"
-             material="shader:flat;color:#1a5080;opacity:1"></a-plane>
-    <a-entity position="-3.2 1.78 -3.37"
-              text="value: Map; color: #88ccee; align: center; anchor: center; width: 1.4; font: mozillavr"></a-entity>
+             position="-3.2 1.89 -3.41" width="0.76" height="0.175"
+             material="shader:flat;color:#000000;opacity:0.001"></a-plane>
 
-    <!-- Settings -->
     <a-plane class="btn3d" data-label="Settings"
-             position="-3.2 1.67 -3.405" width="0.66" height="0.096"
-             material="shader:flat;color:#0a1c0c;opacity:1"></a-plane>
-    <a-plane position="-3.536 1.67 -3.40" width="0.007" height="0.096"
-             material="shader:flat;color:#1a6028;opacity:1"></a-plane>
-    <a-entity position="-3.2 1.67 -3.37"
-              text="value: Settings; color: #88dd88; align: center; anchor: center; width: 1.4; font: mozillavr"></a-entity>
+             position="-3.2 1.70 -3.41" width="0.76" height="0.175"
+             material="shader:flat;color:#000000;opacity:0.001"></a-plane>
 
-    <!-- Quest Log -->
     <a-plane class="btn3d" data-label="Quest Log"
-             position="-3.2 1.56 -3.405" width="0.66" height="0.096"
-             material="shader:flat;color:#1c1408;opacity:1"></a-plane>
-    <a-plane position="-3.536 1.56 -3.40" width="0.007" height="0.096"
-             material="shader:flat;color:#886618;opacity:1"></a-plane>
-    <a-entity position="-3.2 1.56 -3.37"
-              text="value: Quest Log; color: #ddcc66; align: center; anchor: center; width: 1.4; font: mozillavr"></a-entity>
+             position="-3.2 1.51 -3.41" width="0.76" height="0.175"
+             material="shader:flat;color:#000000;opacity:0.001"></a-plane>
 
-    <!-- Screen glow light -->
-    <a-light type="point" position="-3.2 1.72 -3.2"
-             color="#1cc994" intensity="0.6" distance="4.5"></a-light>
-    <a-sphere position="-3.2 1.72 -3.3" radius="0.6"
+    <!-- Glow -->
+    <a-light type="point" position="-3.2 1.95 -3.1" color="#1cc994" intensity="0.7" distance="5"></a-light>
+    <a-sphere position="-3.2 1.95 -3.25" radius="0.65"
               material="shader:flat;color:#1cc994;opacity:0.04"></a-sphere>
 
-    <!-- Direction arrow + label (only shows on first trial) -->
+    <!-- Guide arrow -->
     <a-entity id="guide-arrow">
-      <a-entity position="-3.2 2.55 -3.5">
-        <a-plane width="1.3" height="0.26"
-                 material="shader:flat;color:#030e08;opacity:0.92"></a-plane>
-        <a-plane position="0 0.13 0.001" width="1.3" height="0.005"
-                 material="shader:flat;color:#1cc994;opacity:0.4"></a-plane>
-        <a-entity position="-3.2 2.55 -3.38"
-                  text="value: Терминал энд байна; color: #1cc994; width: 2.0; align: center; font: mozillavr"></a-entity>
-      </a-entity>
-      <a-cone position="-3.2 2.22 -3.5" rotation="180 0 0"
+      <a-plane position="-3.2 2.85 -3.5" width="1.3" height="0.26"
+               material="shader:flat;color:#030e08;opacity:0.92"></a-plane>
+      <a-plane id="term-guide-canvas-plane" position="-3.2 2.85 -3.48" width="1.3" height="0.26"
+               material="shader:flat;src:#guide-canvas;color:#ffffff"></a-plane>
+      <a-cone position="-3.2 2.52 -3.5" rotation="180 0 0"
               radius-bottom="0.09" radius-top="0" height="0.28"
               material="shader:flat;color:#1cc994;opacity:0.5"></a-cone>
     </a-entity>
@@ -571,6 +518,83 @@ h1 span{background:linear-gradient(135deg,var(--pul),var(--tel));-webkit-backgro
 
 
 <script>
+// ── Canvas terminal renderer ──────────────────────
+function drawTerminalCanvas(highlightLabel){
+  const c=document.getElementById('term-canvas');
+  if(!c) return;
+  const ctx=c.getContext('2d');
+  const W=512,H=640;
+  // BG
+  ctx.fillStyle='#02020a';
+  ctx.fillRect(0,0,W,H);
+  // Header bg
+  ctx.fillStyle='#051510';
+  ctx.fillRect(0,0,W,80);
+  // Header text
+  ctx.fillStyle='#1cc994';
+  ctx.font='bold 26px monospace';
+  ctx.textAlign='center';
+  ctx.fillText('DEVICE MENU',W/2,54);
+  // Divider
+  ctx.strokeStyle='#1cc994';
+  ctx.globalAlpha=0.5;
+  ctx.lineWidth=2;
+  ctx.beginPath();ctx.moveTo(16,82);ctx.lineTo(W-16,82);ctx.stroke();
+  ctx.globalAlpha=1;
+
+  const btns=[
+    {label:'Character', bg:'#0e1828', stripe:'#2255aa', tc:'#aaddff'},
+    {label:'Inventory',  bg:'#0e1a3a', stripe:'#5b4fe8', tc:'#c8b8ff'},
+    {label:'Map',        bg:'#0a1828', stripe:'#1a5080', tc:'#88ccee'},
+    {label:'Settings',   bg:'#0a1a0c', stripe:'#1a6028', tc:'#88ee88'},
+    {label:'Quest Log',  bg:'#1c1408', stripe:'#886618', tc:'#ddcc66'},
+  ];
+  btns.forEach((b,i)=>{
+    const y=86+i*111;
+    const h=108;
+    // Button bg
+    ctx.fillStyle=b===btns.find(x=>x.label===highlightLabel)?'#ffffff22':b.bg;
+    ctx.fillRect(0,y,W,h);
+    // Stripe
+    ctx.fillStyle=b.stripe;
+    ctx.fillRect(0,y,10,h);
+    // Divider line
+    ctx.strokeStyle='#ffffff';
+    ctx.globalAlpha=0.05;
+    ctx.lineWidth=1;
+    ctx.beginPath();ctx.moveTo(0,y+h);ctx.lineTo(W,y+h);ctx.stroke();
+    ctx.globalAlpha=1;
+    // Label
+    ctx.fillStyle=b.tc;
+    ctx.font='bold 30px monospace';
+    ctx.textAlign='center';
+    ctx.fillText(b.label,W/2,y+64);
+  });
+  // Refresh texture
+  const el=document.getElementById('term-screen');
+  if(el) el.getObject3D('mesh') && el.getObject3D('mesh').material.map && (el.getObject3D('mesh').material.map.needsUpdate=true);
+}
+
+function drawGuideCanvas(){
+  const c=document.getElementById('guide-canvas');
+  if(!c) return;
+  const ctx=c.getContext('2d');
+  ctx.clearRect(0,0,512,128);
+  ctx.fillStyle='#030e08';
+  ctx.fillRect(0,0,512,128);
+  ctx.strokeStyle='#1cc994';
+  ctx.globalAlpha=0.5;
+  ctx.lineWidth=2;
+  ctx.beginPath();ctx.moveTo(0,2);ctx.lineTo(512,2);ctx.stroke();
+  ctx.globalAlpha=1;
+  ctx.fillStyle='#1cc994';
+  ctx.font='bold 28px monospace';
+  ctx.textAlign='center';
+  ctx.fillText('▼  Терминал энд байна',256,76);
+  const el=document.getElementById('term-guide-canvas-plane');
+  if(el) el.getObject3D('mesh') && el.getObject3D('mesh').material.map && (el.getObject3D('mesh').material.map.needsUpdate=true);
+}
+
 // ── Task definitions ──────────────────────────────
 const TASK_DEFS = {
   'Inventory': {
@@ -884,6 +908,9 @@ document.querySelector('a-scene').addEventListener('loaded',()=>{
   document.querySelectorAll('.btn3d').forEach(el=>el.setAttribute('diegetic-btn',''));
   const rh=document.getElementById('rhand');
   if(rh) rh.setAttribute('ctrl-ray','');
+  // Draw canvases immediately
+  drawTerminalCanvas(null);
+  drawGuideCanvas();
 });
 
 function selOrder(o){
