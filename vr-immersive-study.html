@@ -428,60 +428,55 @@ h1 span{background:linear-gradient(135deg,var(--pul),var(--tel));-webkit-backgro
     <a-plane position="-3.2 2.065 -3.41" width="0.73" height="0.005"
              material="shader:flat;color:#1cc994;opacity:0.4"></a-plane>
 
-    <!-- ── 5 BUTTONS — class="btn3d" on <a-plane> directly ──
-         Raycaster нь mesh-тэй элемент дээр ажилладаг.
-         Тиймд class-ийг geometry бүхий <a-plane> дээр тавина.
+    <!-- ── 5 BUTTONS ──
+         btn3d class нь <a-plane> дээр — raycaster ажиллана.
+         <a-text> нь ДОТОР бус, тусдаа world-space entity — render болно.
     ── -->
 
-    <!-- Character -->
+    <!-- Character — bg plane (clickable) -->
     <a-plane class="btn3d" data-label="Character"
              position="-3.2 2.0 -3.41" width="0.66" height="0.082"
-             material="shader:flat;color:#0e1828;opacity:1">
-      <a-plane position="-0.33 0 0.001" width="0.006" height="0.082"
-               material="shader:flat;color:#1a4888;opacity:1"></a-plane>
-      <a-text value="Character" position="0.02 0 0.005"
-              color="#88ccee" width="1.2" align="center" font="roboto"></a-text>
-    </a-plane>
+             material="shader:flat;color:#0e1828;opacity:1"></a-plane>
+    <a-plane position="-3.53 2.0 -3.405" width="0.006" height="0.082"
+             material="shader:flat;color:#1a4888;opacity:1"></a-plane>
+    <a-text value="Character" position="-3.2 2.0 -3.395"
+            color="#88ccee" width="1.55" align="center" font="roboto"></a-text>
 
     <!-- Inventory (TARGET) -->
     <a-plane class="btn3d" data-label="Inventory"
              position="-3.2 1.9 -3.41" width="0.66" height="0.082"
-             material="shader:flat;color:#0c1630;opacity:1">
-      <a-plane position="-0.33 0 0.001" width="0.006" height="0.082"
-               material="shader:flat;color:#5b4fe8;opacity:1"></a-plane>
-      <a-text value="Inventory" position="0.02 0 0.005"
-              color="#9a8aff" width="1.2" align="center" font="roboto"></a-text>
-    </a-plane>
+             material="shader:flat;color:#0c1630;opacity:1"></a-plane>
+    <a-plane position="-3.53 1.9 -3.405" width="0.006" height="0.082"
+             material="shader:flat;color:#5b4fe8;opacity:1"></a-plane>
+    <a-text value="Inventory" position="-3.2 1.9 -3.395"
+            color="#c0b0ff" width="1.55" align="center" font="roboto"></a-text>
 
     <!-- Map -->
     <a-plane class="btn3d" data-label="Map"
              position="-3.2 1.8 -3.41" width="0.66" height="0.082"
-             material="shader:flat;color:#081620;opacity:1">
-      <a-plane position="-0.33 0 0.001" width="0.006" height="0.082"
-               material="shader:flat;color:#1a4878;opacity:1"></a-plane>
-      <a-text value="Map" position="0.02 0 0.005"
-              color="#5888b8" width="1.2" align="center" font="roboto"></a-text>
-    </a-plane>
+             material="shader:flat;color:#081620;opacity:1"></a-plane>
+    <a-plane position="-3.53 1.8 -3.405" width="0.006" height="0.082"
+             material="shader:flat;color:#1a4878;opacity:1"></a-plane>
+    <a-text value="Map" position="-3.2 1.8 -3.395"
+            color="#80aadd" width="1.55" align="center" font="roboto"></a-text>
 
     <!-- Settings -->
     <a-plane class="btn3d" data-label="Settings"
              position="-3.2 1.7 -3.41" width="0.66" height="0.082"
-             material="shader:flat;color:#08160a;opacity:1">
-      <a-plane position="-0.33 0 0.001" width="0.006" height="0.082"
-               material="shader:flat;color:#185828;opacity:1"></a-plane>
-      <a-text value="Settings" position="0.02 0 0.005"
-              color="#58aa68" width="1.2" align="center" font="roboto"></a-text>
-    </a-plane>
+             material="shader:flat;color:#08160a;opacity:1"></a-plane>
+    <a-plane position="-3.53 1.7 -3.405" width="0.006" height="0.082"
+             material="shader:flat;color:#185828;opacity:1"></a-plane>
+    <a-text value="Settings" position="-3.2 1.7 -3.395"
+            color="#70cc80" width="1.55" align="center" font="roboto"></a-text>
 
     <!-- Quest Log -->
     <a-plane class="btn3d" data-label="Quest Log"
              position="-3.2 1.6 -3.41" width="0.66" height="0.082"
-             material="shader:flat;color:#181208;opacity:1">
-      <a-plane position="-0.33 0 0.001" width="0.006" height="0.082"
-               material="shader:flat;color:#887018;opacity:1"></a-plane>
-      <a-text value="Quest Log" position="0.02 0 0.005"
-              color="#ddaa58" width="1.2" align="center" font="roboto"></a-text>
-    </a-plane>
+             material="shader:flat;color:#181208;opacity:1"></a-plane>
+    <a-plane position="-3.53 1.6 -3.405" width="0.006" height="0.082"
+             material="shader:flat;color:#887018;opacity:1"></a-plane>
+    <a-text value="Quest Log" position="-3.2 1.6 -3.395"
+            color="#ddbb66" width="1.55" align="center" font="roboto"></a-text>
 
     <!-- Screen glow light -->
     <a-light type="point" position="-3.2 1.72 -3.2"
