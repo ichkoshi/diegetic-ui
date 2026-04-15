@@ -128,6 +128,50 @@ h1 span{background:linear-gradient(135deg,var(--pul),var(--tel));-webkit-backgro
 #flash.err{border-color:rgba(200,50,50,.2)}
 #flash.err .fm{color:#f08080}
 
+/* ── SUB-PANEL (phase 2) ── */
+#subpanel{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  z-index:160;pointer-events:auto;display:none;
+  width:320px;
+}
+.sp-wrap{
+  background:rgba(5,5,18,.97);border-radius:14px;overflow:hidden;
+  border:1px solid var(--bo);
+}
+.sp-head{
+  padding:12px 18px;display:flex;align-items:center;justify-content:space-between;
+  border-bottom:1px solid var(--bo);
+}
+.sp-title{font-size:13px;font-weight:700}
+.sp-prompt{font-size:10px;font-family:var(--fm);color:var(--mu);letter-spacing:.06em}
+.sp-close{
+  font-size:11px;padding:4px 10px;border-radius:6px;cursor:pointer;
+  background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);
+  color:var(--mu);font-family:var(--fm);
+}
+.sp-items{padding:8px}
+.sp-item{
+  display:flex;align-items:center;gap:12px;
+  width:100%;padding:11px 14px;border-radius:9px;
+  font-size:13px;font-weight:600;font-family:var(--ff);
+  background:transparent;border:1px solid transparent;
+  color:var(--tx);cursor:pointer;text-align:left;
+  transition:all .15s;margin-bottom:4px;
+}
+.sp-item:last-child{margin-bottom:0}
+.sp-item:hover{background:rgba(255,255,255,.06);border-color:var(--bo)}
+.sp-item.tgt:hover{background:rgba(91,79,232,.12);border-color:rgba(91,79,232,.25)}
+.sp-ico{font-size:18px;flex-shrink:0;width:24px;text-align:center}
+
+/* Phase indicator */
+.phase-badge{
+  display:inline-flex;align-items:center;gap:5px;
+  font-size:9px;font-family:var(--fm);letter-spacing:.1em;text-transform:uppercase;
+  padding:3px 9px;border-radius:100px;margin-bottom:4px;
+}
+.phase-badge.p1{background:rgba(91,79,232,.15);color:var(--pul);border:1px solid rgba(91,79,232,.25)}
+.phase-badge.p2{background:rgba(28,201,148,.12);color:var(--tel);border:1px solid rgba(28,201,148,.22)}
+
 /* END */
 #end{position:absolute;inset:0;z-index:400;background:rgba(3,3,10,.97);display:none;align-items:center;justify-content:center}
 .ew{background:var(--c1);border:1px solid var(--bo);border-radius:20px;padding:42px 46px;min-width:460px;text-align:center;position:relative;overflow:hidden}
@@ -231,7 +275,8 @@ h1 span{background:linear-gradient(135deg,var(--pul),var(--tel));-webkit-backgro
     <div class="hp" id="cp">
       <div class="tag">Одоогийн нөхцөл</div>
       <div class="name" id="cpname">А — Non-diegetic HUD</div>
-      <div class="task" id="cptask">"Inventory" товчийг баруун талын цэснээс олоод дарна уу</div>
+      <div class="phase-badge p1" id="pbadge">Үе шат 1 — Цэс нээх</div>
+      <div class="task" id="cptask"></div>
     </div>
     <div class="hp" id="tp">
       <div class="tl">Хугацаа</div>
@@ -278,6 +323,19 @@ h1 span{background:linear-gradient(135deg,var(--pul),var(--tel));-webkit-backgro
     <div class="srow sg">HP ▓▓▓▓▓▓▓░░░  72</div>
     <div class="srow">Score 1,240 · Lv 5</div>
     <div class="srow" style="color:#ddbb88;margin-top:4px">⚠ Low ammo</div>
+  </div>
+</div>
+
+<!-- PHASE 2 SUB-PANEL -->
+<div id="subpanel">
+  <div class="sp-wrap">
+    <div class="sp-head">
+      <div>
+        <div class="sp-title" id="sp-title">Inventory</div>
+        <div class="sp-prompt" id="sp-prompt">Эмийг олж дарна уу</div>
+      </div>
+    </div>
+    <div class="sp-items" id="sp-items"></div>
   </div>
 </div>
 
@@ -422,25 +480,22 @@ h1 span{background:linear-gradient(135deg,var(--pul),var(--tel));-webkit-backgro
     <!-- Screen header -->
     <a-plane position="-3.2 2.12 -3.41" width="0.73" height="0.1"
              material="shader:flat;color:#051510;opacity:1"></a-plane>
-    <a-text value="DEVICE MENU" position="-3.2 2.12 -3.4"
-            color="#1cc994" width="1.5" align="center" font="roboto"></a-text>
+    <a-text value="DEVICE MENU" position="-3.2 2.12 -3.36"
+            color="#1cc994" width="1.5" align="center"></a-text>
     <!-- Divider -->
     <a-plane position="-3.2 2.065 -3.41" width="0.73" height="0.005"
              material="shader:flat;color:#1cc994;opacity:0.4"></a-plane>
 
-    <!-- ── 5 BUTTONS ──
-         btn3d class нь <a-plane> дээр — raycaster ажиллана.
-         <a-text> нь ДОТОР бус, тусдаа world-space entity — render болно.
-    ── -->
+    <!-- ── 5 BUTTONS ── -->
 
-    <!-- Character — bg plane (clickable) -->
+    <!-- Character -->
     <a-plane class="btn3d" data-label="Character"
              position="-3.2 2.0 -3.41" width="0.66" height="0.082"
              material="shader:flat;color:#0e1828;opacity:1"></a-plane>
     <a-plane position="-3.53 2.0 -3.405" width="0.006" height="0.082"
              material="shader:flat;color:#1a4888;opacity:1"></a-plane>
-    <a-text value="Character" position="-3.2 2.0 -3.395"
-            color="#88ccee" width="1.55" align="center" font="roboto"></a-text>
+    <a-entity position="-3.2 2.0 -3.33"
+              text="value: Character; color: #aaddff; width: 1.4; align: center; wrapCount: 20"></a-entity>
 
     <!-- Inventory (TARGET) -->
     <a-plane class="btn3d" data-label="Inventory"
@@ -448,8 +503,8 @@ h1 span{background:linear-gradient(135deg,var(--pul),var(--tel));-webkit-backgro
              material="shader:flat;color:#0c1630;opacity:1"></a-plane>
     <a-plane position="-3.53 1.9 -3.405" width="0.006" height="0.082"
              material="shader:flat;color:#5b4fe8;opacity:1"></a-plane>
-    <a-text value="Inventory" position="-3.2 1.9 -3.395"
-            color="#c0b0ff" width="1.55" align="center" font="roboto"></a-text>
+    <a-entity position="-3.2 1.9 -3.33"
+              text="value: Inventory; color: #ffffff; width: 1.4; align: center; wrapCount: 20"></a-entity>
 
     <!-- Map -->
     <a-plane class="btn3d" data-label="Map"
@@ -457,8 +512,8 @@ h1 span{background:linear-gradient(135deg,var(--pul),var(--tel));-webkit-backgro
              material="shader:flat;color:#081620;opacity:1"></a-plane>
     <a-plane position="-3.53 1.8 -3.405" width="0.006" height="0.082"
              material="shader:flat;color:#1a4878;opacity:1"></a-plane>
-    <a-text value="Map" position="-3.2 1.8 -3.395"
-            color="#80aadd" width="1.55" align="center" font="roboto"></a-text>
+    <a-entity position="-3.2 1.8 -3.33"
+              text="value: Map; color: #aaccee; width: 1.4; align: center; wrapCount: 20"></a-entity>
 
     <!-- Settings -->
     <a-plane class="btn3d" data-label="Settings"
@@ -466,8 +521,8 @@ h1 span{background:linear-gradient(135deg,var(--pul),var(--tel));-webkit-backgro
              material="shader:flat;color:#08160a;opacity:1"></a-plane>
     <a-plane position="-3.53 1.7 -3.405" width="0.006" height="0.082"
              material="shader:flat;color:#185828;opacity:1"></a-plane>
-    <a-text value="Settings" position="-3.2 1.7 -3.395"
-            color="#70cc80" width="1.55" align="center" font="roboto"></a-text>
+    <a-entity position="-3.2 1.7 -3.33"
+              text="value: Settings; color: #aaddaa; width: 1.4; align: center; wrapCount: 20"></a-entity>
 
     <!-- Quest Log -->
     <a-plane class="btn3d" data-label="Quest Log"
@@ -475,8 +530,8 @@ h1 span{background:linear-gradient(135deg,var(--pul),var(--tel));-webkit-backgro
              material="shader:flat;color:#181208;opacity:1"></a-plane>
     <a-plane position="-3.53 1.6 -3.405" width="0.006" height="0.082"
              material="shader:flat;color:#887018;opacity:1"></a-plane>
-    <a-text value="Quest Log" position="-3.2 1.6 -3.395"
-            color="#ddbb66" width="1.55" align="center" font="roboto"></a-text>
+    <a-entity position="-3.2 1.6 -3.33"
+              text="value: Quest Log; color: #eedd99; width: 1.4; align: center; wrapCount: 20"></a-entity>
 
     <!-- Screen glow light -->
     <a-light type="point" position="-3.2 1.72 -3.2"
@@ -491,9 +546,8 @@ h1 span{background:linear-gradient(135deg,var(--pul),var(--tel));-webkit-backgro
                  material="shader:flat;color:#030e08;opacity:0.92"></a-plane>
         <a-plane position="0 0.13 0.001" width="1.3" height="0.005"
                  material="shader:flat;color:#1cc994;opacity:0.4"></a-plane>
-        <a-text value="← Терминал энд байна"
-                position="0 0 0.007" color="#1cc994"
-                width="2.1" align="center" font="roboto"></a-text>
+        <a-entity position="-3.2 2.55 -3.42"
+                  text="value: Терминал энд байна; color: #1cc994; width: 2.0; align: center"></a-entity>
       </a-entity>
       <a-cone position="-3.2 2.22 -3.5" rotation="180 0 0"
               radius-bottom="0.09" radius-top="0" height="0.28"
@@ -511,25 +565,84 @@ h1 span{background:linear-gradient(135deg,var(--pul),var(--tel));-webkit-backgro
 
 </a-scene>
 
-<script>
-let cond='A', ts=null, ti=null, done=false, trial=0;
-const MAX=3, TGT='Inventory', res={A:[],B:[]}, errs={A:0,B:0};
-let pid='P01', orderAB=true, condOrder='AB';
-let startTime=null;
 
-// ── Order selector ──
-function selOrder(o){
-  orderAB=(o==='AB');
-  condOrder=o;
-  document.getElementById('ord-ab').className='ord-btn'+(orderAB?' sel':'');
-  document.getElementById('ord-ba').className='ord-btn'+(!orderAB?' sel':'');
+<script>
+// ── Task definitions ──────────────────────────────
+const TASK_DEFS = {
+  'Inventory': {
+    icon:'📦', p2prompt:'Эмийн шилийг олж дарна уу',
+    items:[
+      {ico:'⚔',label:'Илд',tgt:false},
+      {ico:'🛡',label:'Бамбай',tgt:false},
+      {ico:'🧪',label:'Эм',tgt:true},
+      {ico:'🔑',label:'Түлхүүр',tgt:false},
+    ]
+  },
+  'Map': {
+    icon:'🗺', p2prompt:'Ойн баазыг дарна уу',
+    items:[
+      {ico:'🏔',label:'Уул',tgt:false},
+      {ico:'🏙',label:'Хот',tgt:false},
+      {ico:'🌲',label:'Ойн бааз',tgt:true},
+      {ico:'🕳',label:'Агуй',tgt:false},
+    ]
+  },
+  'Settings': {
+    icon:'⚙', p2prompt:'Дууны тохиргоог дарна уу',
+    items:[
+      {ico:'☀',label:'Тод байдал',tgt:false},
+      {ico:'🔊',label:'Дуу',tgt:true},
+      {ico:'🌐',label:'Хэл',tgt:false},
+      {ico:'🎮',label:'Гар',tgt:false},
+    ]
+  },
+  'Character': {
+    icon:'👤', p2prompt:'Хурдны чадварыг дарна уу',
+    items:[
+      {ico:'💪',label:'Хүч',tgt:false},
+      {ico:'⚡',label:'Хурд',tgt:true},
+      {ico:'🛡',label:'Хамгаалалт',tgt:false},
+      {ico:'✨',label:'Ид шид',tgt:false},
+    ]
+  },
+  'Quest Log': {
+    icon:'📜', p2prompt:'"Аврах" даалгаврыг дарна уу',
+    items:[
+      {ico:'🐉',label:'Луу агнах',tgt:false},
+      {ico:'💊',label:'Эм авах',tgt:false},
+      {ico:'🆘',label:'Аврах',tgt:true},
+      {ico:'🏆',label:'Баялаг',tgt:false},
+    ]
+  }
+};
+
+// ── State ─────────────────────────────────────────
+let cond='A', ts=null, ti=null, isDone=false, trial=0, phase=1;
+const MAX=3, res={A:[],B:[]}, errs={A:0,B:0};
+const times={A:{t1:[],t2:[]},B:{t1:[],t2:[]}};
+let t1_ts=null;
+let pid='P01', orderAB=true, condOrder='AB';
+let targets={A:[],B:[]};
+
+function shuffle(arr){
+  const a=[...arr];
+  for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}
+  return a;
 }
+function genTargets(){
+  const keys=Object.keys(TASK_DEFS);
+  targets.A=shuffle(keys).slice(0,MAX);
+  targets.B=shuffle(keys).slice(0,MAX);
+}
+function currentTarget(){ return targets[cond][trial]||'Inventory'; }
 
 function tick(){
-  if(!done) document.getElementById('tclock').textContent=
+  if(!isDone) document.getElementById('tclock').textContent=
     ((performance.now()-ts)/1000).toFixed(1);
 }
-function startTimer(){clearInterval(ti);ts=performance.now();done=false;ti=setInterval(tick,80)}
+function startTimer(){
+  clearInterval(ti); ts=performance.now(); t1_ts=ts; isDone=false; ti=setInterval(tick,80);
+}
 
 function updateProg(){
   const n=res.A.length+res.B.length;
@@ -540,13 +653,21 @@ function updateProg(){
   }
 }
 
+function updateTaskUI(){
+  const tgt=currentTarget();
+  const hint=cond==='A'?'(баруун цэс)':'(зүүн терминал)';
+  document.getElementById('cptask').textContent=`"${tgt}" товчийг олоод дарна уу ${hint}`;
+  document.getElementById('pbadge').textContent='Үе шат 1 — Цэс нээх';
+  document.getElementById('pbadge').className='phase-badge p1';
+}
+
 function showFlash(msg,sub,type){
   const f=document.getElementById('flash');
   document.getElementById('fmsg').textContent=msg;
   document.getElementById('fsub').textContent=sub||'';
   f.className='show '+type;
   clearTimeout(f._t);
-  f._t=setTimeout(()=>f.className='',2200);
+  f._t=setTimeout(()=>f.className='',2000);
 }
 function vrFlash(msg,col){
   const p=document.getElementById('vrfl');
@@ -554,9 +675,8 @@ function vrFlash(msg,col){
   document.getElementById('vftxt').setAttribute('color',col||'#4de8b0');
   p.setAttribute('visible',true);
   clearTimeout(p._t);
-  p._t=setTimeout(()=>p.setAttribute('visible',false),2200);
+  p._t=setTimeout(()=>p.setAttribute('visible',false),2000);
 }
-
 function addLog(msg,time,type){
   const d=document.createElement('div');
   d.className='lr '+type;
@@ -564,177 +684,181 @@ function addLog(msg,time,type){
   document.getElementById('entries').prepend(d);
 }
 
-// ── Save to localStorage ──
-function saveToStorage(){
-  const avgA=res.A.length?(res.A.reduce((a,b)=>a+b,0)/res.A.length).toFixed(2):'';
-  const avgB=res.B.length?(res.B.reduce((a,b)=>a+b,0)/res.B.length).toFixed(2):'';
-  const record={
-    pid,
-    order:condOrder,
-    date:new Date().toLocaleDateString('mn-MN'),
-    time:new Date().toLocaleTimeString('mn-MN',{hour:'2-digit',minute:'2-digit'}),
-    a1:res.A[0]||'',a2:res.A[1]||'',a3:res.A[2]||'',
-    avgA, errA:errs.A,
-    b1:res.B[0]||'',b2:res.B[1]||'',b3:res.B[2]||'',
-    avgB, errB:errs.B
-  };
-  const all=JSON.parse(localStorage.getItem('vr_study')||'[]');
-  // Replace if same pid exists, else append
-  const idx=all.findIndex(r=>r.pid===pid);
-  if(idx>=0) all[idx]=record; else all.push(record);
-  localStorage.setItem('vr_study',JSON.stringify(all));
-  return record;
-}
-
-// ── CSV for single participant ──
-function downloadCSV(){
-  const r=saveToStorage();
-  const header='Оролцогч,Дараалал,Огноо,Цаг,A1(s),A2(s),A3(s),A_avg(s),A_алдаа,B1(s),B2(s),B3(s),B_avg(s),B_алдаа\n';
-  const row=`${r.pid},${r.order},${r.date},${r.time},${r.a1},${r.a2},${r.a3},${r.avgA},${r.errA},${r.b1},${r.b2},${r.b3},${r.avgB},${r.errB}\n`;
-  dl('vr_study_'+r.pid+'.csv', header+row);
-}
-
-// ── CSV for all participants ──
-function downloadAllCSV(){
-  const all=JSON.parse(localStorage.getItem('vr_study')||'[]');
-  if(!all.length){alert('Өгөгдөл байхгүй');return}
-  const header='Оролцогч,Дараалал,Огноо,Цаг,A1(s),A2(s),A3(s),A_avg(s),A_алдаа,B1(s),B2(s),B3(s),B_avg(s),B_алдаа\n';
-  const rows=all.map(r=>`${r.pid},${r.order},${r.date},${r.time},${r.a1},${r.a2},${r.a3},${r.avgA},${r.errA},${r.b1},${r.b2},${r.b3},${r.avgB},${r.errB}`).join('\n');
-  dl('vr_study_all.csv', header+rows+'\n');
-}
-
-function dl(filename,content){
-  const a=document.createElement('a');
-  a.href='data:text/csv;charset=utf-8,\uFEFF'+encodeURIComponent(content);
-  a.download=filename;
-  a.click();
-}
-
-// ── Show all data modal ──
-function showAllData(){
-  const all=JSON.parse(localStorage.getItem('vr_study')||'[]');
-  document.getElementById('ad-count').textContent='Нийт '+all.length+' оролцогч бүртгэгдсэн';
-  const body=document.getElementById('ad-body');
-  if(!all.length){
-    body.innerHTML='<div class="no-data">Өгөгдөл байхгүй байна</div>';
-  } else {
-    body.innerHTML=`
-      <table class="ad-table">
-        <thead><tr>
-          <th>№</th><th>Дараалал</th><th>Огноо</th>
-          <th>A avg(s)</th><th>A алдаа</th>
-          <th>B avg(s)</th><th>B алдаа</th>
-          <th>Ялгаа</th>
-        </tr></thead>
-        <tbody>${all.map(r=>{
-          const diff=r.avgA&&r.avgB?(+r.avgB - +r.avgA).toFixed(2):'—';
-          const diffCol=diff!=='—'&&+diff>0?'color:#4de8b0':diff!=='—'?'color:#f08080':'';
-          return `<tr>
-            <td>${r.pid}</td>
-            <td>${r.order}</td>
-            <td>${r.date} ${r.time}</td>
-            <td style="color:#8a7bff">${r.avgA}s</td>
-            <td>${r.errA}</td>
-            <td style="color:#4de8b0">${r.avgB}s</td>
-            <td>${r.errB}</td>
-            <td style="${diffCol}">${diff!=='—'?(+diff>0?'+':'')+diff+'s':diff}</td>
-          </tr>`;
-        }).join('')}</tbody>
-      </table>`;
-  }
-  document.getElementById('alldata').style.display='flex';
-}
-
-function clearAll(){
-  if(confirm('Бүх өгөгдлийг устгах уу?')){
-    localStorage.removeItem('vr_study');
-    showAllData();
-  }
-}
-
-// ── End screen ──
-function showEnd(){
-  clearInterval(ti);
-  saveToStorage();
-  document.getElementById('hud').style.display='none';
+// ── Phase 2 sub-panel ─────────────────────────────
+function openSubPanel(menuLabel){
+  const def=TASK_DEFS[menuLabel];
+  if(!def) return;
   document.getElementById('menu-a').style.display='none';
-  document.getElementById('stats-a').style.display='none';
-  document.getElementById('ep-pid').textContent=`Оролцогч ${pid} · Дараалал ${condOrder}`;
-  const avgA=res.A.length?(res.A.reduce((a,b)=>a+b,0)/res.A.length).toFixed(2):'—';
-  const avgB=res.B.length?(res.B.reduce((a,b)=>a+b,0)/res.B.length).toFixed(2):'—';
-  const winA=res.A.length&&res.B.length&&+avgA<+avgB;
-  const winB=res.A.length&&res.B.length&&+avgB<+avgA;
-  document.getElementById('rg').innerHTML=`
-    <div class="rc a ${winA?'win':''}">
-      <div class="rl">Нөхцөл А — HUD</div>
-      <div class="rv">${avgA}s</div>
-      <div class="rs">avg · ${errs.A} алдаа</div>
-    </div>
-    <div class="rc b ${winB?'win':''}">
-      <div class="rl">Нөхцөл В — Diegetic</div>
-      <div class="rv">${avgB}s</div>
-      <div class="rs">avg · ${errs.B} алдаа</div>
-    </div>
-    <div class="rc a"><div class="rl">А оролдлогууд</div>
-      <div class="rv" style="font-size:15px">${res.A.map(v=>v+'s').join(' · ')||'—'}</div></div>
-    <div class="rc b"><div class="rl">В оролдлогууд</div>
-      <div class="rv" style="font-size:15px">${res.B.map(v=>v+'s').join(' · ')||'—'}</div></div>
-  `;
-  document.getElementById('end').style.display='flex';
+  document.getElementById('cptask').textContent=def.p2prompt;
+  document.getElementById('pbadge').textContent='Үе шат 2 — Агуулга';
+  document.getElementById('pbadge').className='phase-badge p2';
+  const items=shuffle(def.items);
+  document.getElementById('sp-title').textContent=menuLabel+' '+def.icon;
+  document.getElementById('sp-prompt').textContent=def.p2prompt;
+  const el=document.getElementById('sp-items');
+  el.innerHTML='';
+  items.forEach(item=>{
+    const btn=document.createElement('button');
+    btn.className='sp-item'+(item.tgt?' tgt':'');
+    btn.innerHTML=`<span class="sp-ico">${item.ico}</span>${item.label}`;
+    btn.onclick=()=>hitSubItem(item.tgt,item.label);
+    el.appendChild(btn);
+  });
+  document.getElementById('subpanel').style.display='block';
 }
 
-// ── Hit logic ──
-function processHit(label){
-  if(done) return;
-  clearInterval(ti);
-  done=true;
-  const s=((performance.now()-ts)/1000).toFixed(2);
-  if(label===TGT){
-    trial++;
-    res[cond].push(+s);
-    const avg=(res[cond].reduce((a,b)=>a+b,0)/res[cond].length).toFixed(2);
-    addLog(`✓  avg ${avg}s`,s,'ok');
-    updateProg();
+// ── Phase 1 hit (menu button) ─────────────────────
+function hitPhase1(label){
+  if(isDone||phase!==1) return;
+  const tgt=currentTarget();
+  const t1=((performance.now()-t1_ts)/1000).toFixed(2);
+  if(label===tgt){
+    times[cond].t1.push(+t1);
+    addLog(`P1 ✓ "${label}"`,t1,'ok');
+    phase=2;
     if(cond==='B'){
       const g=document.getElementById('guide-arrow');
       if(g) g.setAttribute('visible',false);
     }
+    openSubPanel(label);
+  } else {
+    errs[cond]++;
+    addLog(`P1 ✗ "${label}" ≠ "${tgt}"`,t1,'err');
+    showFlash(`✗  "${label}"`,`"${tgt}"-г хайна уу`,'err');
+  }
+}
+
+// ── Phase 2 hit (sub-item) ────────────────────────
+function hitSubItem(isTarget,label){
+  if(phase!==2) return;
+  const total=((performance.now()-t1_ts)/1000).toFixed(2);
+  const p1=times[cond].t1[times[cond].t1.length-1]||0;
+  const p2=(+total-p1).toFixed(2);
+  if(isTarget){
+    clearInterval(ti); isDone=true;
+    times[cond].t2.push(+p2);
+    res[cond].push(+total);
+    const avg=(res[cond].reduce((a,b)=>a+b,0)/res[cond].length).toFixed(2);
+    addLog(`P2 ✓ "${label}"  нийт ${total}s`,p2,'ok');
+    document.getElementById('subpanel').style.display='none';
+    updateProg();
+    trial++;
     if(trial>=MAX){
       if(res.A.length===MAX&&res.B.length===MAX){
         setTimeout(showEnd,1400);
       } else {
         showFlash(`Нөхцөл ${cond} дууслаа`,'Нөгөө нөхцөл рүү шилжинэ үү','ok');
-        vrFlash(`Нөхцөл ${cond} complete  avg ${avg}s`,'#4de8b0');
+        vrFlash(`Нөхцөл ${cond} avg ${avg}s`,'#4de8b0');
         document.getElementById('cptask').textContent='✓ Дууссан — нөхцөлийг сэлгэнэ үү';
+        document.getElementById('pbadge').textContent='✓ Дууссан';
       }
     } else {
-      showFlash(`✓  ${s}s`,`Оролдлого ${trial+1} / ${MAX}`,'ok');
-      vrFlash(`✓  ${s}s`,'#4de8b0');
+      showFlash(`✓  ${total}s`,`Цэс: ${p1}s · Агуулга: ${p2}s`,'ok');
       document.getElementById('tsub').textContent=`Оролдлого ${trial+1} / ${MAX}`;
-      setTimeout(startTimer,700);
+      phase=1;
+      setTimeout(()=>{
+        updateTaskUI();
+        if(cond==='A') document.getElementById('menu-a').style.display='block';
+        startTimer();
+      },900);
     }
   } else {
     errs[cond]++;
-    addLog(`"${label}" — буруу`,s,'err');
-    showFlash(`✗  "${label}"`,'Inventory-г хайна уу','err');
-    vrFlash(`✗  буруу: ${label}`,'#f08080');
-    setTimeout(startTimer,500);
+    addLog(`P2 ✗ "${label}"`,p2,'err');
+    showFlash(`✗  "${label}"`,`Зөв зүйлийг хайна уу`,'err');
   }
 }
 
-function hitA(label){ if(cond!=='A') return; processHit(label); }
+function hitA(label){ if(cond!=='A'||phase!==1) return; hitPhase1(label); }
 
+// ── Storage / CSV ─────────────────────────────────
+function saveToStorage(){
+  const avg=x=>x.length?(x.reduce((a,b)=>a+b,0)/x.length).toFixed(2):'';
+  const record={
+    pid,order:condOrder,
+    date:new Date().toLocaleDateString('mn-MN'),
+    time:new Date().toLocaleTimeString('mn-MN',{hour:'2-digit',minute:'2-digit'}),
+    a1:res.A[0]||'',a2:res.A[1]||'',a3:res.A[2]||'',
+    avgA:avg(res.A),t1A:avg(times.A.t1),t2A:avg(times.A.t2),errA:errs.A,
+    b1:res.B[0]||'',b2:res.B[1]||'',b3:res.B[2]||'',
+    avgB:avg(res.B),t1B:avg(times.B.t1),t2B:avg(times.B.t2),errB:errs.B
+  };
+  const all=JSON.parse(localStorage.getItem('vr_study')||'[]');
+  const idx=all.findIndex(r=>r.pid===pid);
+  if(idx>=0) all[idx]=record; else all.push(record);
+  localStorage.setItem('vr_study',JSON.stringify(all));
+  return record;
+}
+function dl(fn,c){const a=document.createElement('a');a.href='data:text/csv;charset=utf-8,\uFEFF'+encodeURIComponent(c);a.download=fn;a.click()}
+const HDR='№,Дараалал,Огноо,Цаг,A1,A2,A3,A_нийт,A_цэс,A_агуулга,A_алдаа,B1,B2,B3,B_нийт,B_цэс,B_агуулга,B_алдаа\n';
+function rRow(r){return`${r.pid},${r.order},${r.date},${r.time},${r.a1},${r.a2},${r.a3},${r.avgA},${r.t1A},${r.t2A},${r.errA},${r.b1},${r.b2},${r.b3},${r.avgB},${r.t1B},${r.t2B},${r.errB}`}
+function downloadCSV(){const r=saveToStorage();dl('vr_'+r.pid+'.csv',HDR+rRow(r)+'\n')}
+function downloadAllCSV(){
+  const all=JSON.parse(localStorage.getItem('vr_study')||'[]');
+  if(!all.length){alert('Өгөгдөл байхгүй');return}
+  dl('vr_all.csv',HDR+all.map(rRow).join('\n')+'\n');
+}
+function showAllData(){
+  const all=JSON.parse(localStorage.getItem('vr_study')||'[]');
+  document.getElementById('ad-count').textContent='Нийт '+all.length+' оролцогч';
+  const body=document.getElementById('ad-body');
+  if(!all.length){body.innerHTML='<div class="no-data">Өгөгдөл байхгүй</div>';}
+  else{
+    body.innerHTML=`<table class="ad-table"><thead><tr>
+      <th>№</th><th>Дараалал</th><th>Огноо</th>
+      <th>A нийт</th><th>A цэс</th><th>A агуулга</th><th>A алдаа</th>
+      <th>B нийт</th><th>B цэс</th><th>B агуулга</th><th>B алдаа</th>
+      <th>Ялгаа</th></tr></thead><tbody>
+      ${all.map(r=>{
+        const diff=r.avgA&&r.avgB?(+r.avgB-+r.avgA).toFixed(2):'—';
+        const dc=diff!=='—'&&+diff>0?'color:#4de8b0':diff!=='—'?'color:#f08080':'';
+        return `<tr><td>${r.pid}</td><td>${r.order}</td><td>${r.date}</td>
+          <td style="color:#8a7bff">${r.avgA}s</td><td>${r.t1A}s</td><td>${r.t2A}s</td><td>${r.errA}</td>
+          <td style="color:#4de8b0">${r.avgB}s</td><td>${r.t1B}s</td><td>${r.t2B}s</td><td>${r.errB}</td>
+          <td style="${dc}">${diff!=='—'?(+diff>0?'+':'')+diff+'s':diff}</td></tr>`;
+      }).join('')}</tbody></table>`;
+  }
+  document.getElementById('alldata').style.display='flex';
+}
+function clearAll(){if(confirm('Бүх өгөгдлийг устгах уу?')){localStorage.removeItem('vr_study');showAllData()}}
+
+function showEnd(){
+  clearInterval(ti); saveToStorage();
+  document.getElementById('hud').style.display='none';
+  document.getElementById('menu-a').style.display='none';
+  document.getElementById('subpanel').style.display='none';
+  document.getElementById('ep-pid').textContent=`Оролцогч ${pid} · Дараалал ${condOrder}`;
+  const avg=x=>x.length?(x.reduce((a,b)=>a+b,0)/x.length).toFixed(2):'—';
+  const avgA=avg(res.A), avgB=avg(res.B);
+  const t1A=avg(times.A.t1), t1B=avg(times.B.t1);
+  const winA=res.A.length&&res.B.length&&+avgA<+avgB;
+  const winB=res.A.length&&res.B.length&&+avgB<+avgA;
+  document.getElementById('rg').innerHTML=`
+    <div class="rc a ${winA?'win':''}">
+      <div class="rl">Нөхцөл А — HUD</div><div class="rv">${avgA}s</div>
+      <div class="rs">нийт avg · цэс ${t1A}s · ${errs.A} алдаа</div>
+    </div>
+    <div class="rc b ${winB?'win':''}">
+      <div class="rl">Нөхцөл В — Diegetic</div><div class="rv">${avgB}s</div>
+      <div class="rs">нийт avg · цэс ${t1B}s · ${errs.B} алдаа</div>
+    </div>
+    <div class="rc a"><div class="rl">А оролдлогууд</div>
+      <div class="rv" style="font-size:15px">${res.A.map(v=>v+'s').join(' · ')||'—'}</div></div>
+    <div class="rc b"><div class="rl">В оролдлогууд</div>
+      <div class="rv" style="font-size:15px">${res.B.map(v=>v+'s').join(' · ')||'—'}</div></div>`;
+  document.getElementById('end').style.display='flex';
+}
+
+// ── A-Frame ───────────────────────────────────────
 AFRAME.registerComponent('diegetic-btn',{
   init(){
-    const el=this.el;
-    const label=el.getAttribute('data-label');
-    el.addEventListener('click',()=>{ if(cond!=='B') return; processHit(label); });
-    el.addEventListener('triggerdown',()=>{ if(cond!=='B') return; processHit(label); });
+    const el=this.el,label=el.getAttribute('data-label');
+    el.addEventListener('click',()=>{if(cond!=='B'||phase!==1)return;hitPhase1(label);});
+    el.addEventListener('triggerdown',()=>{if(cond!=='B'||phase!==1)return;hitPhase1(label);});
     el.addEventListener('mouseenter',()=>el.setAttribute('material','opacity',0.55));
     el.addEventListener('mouseleave',()=>el.setAttribute('material','opacity',1));
   }
 });
-
 AFRAME.registerComponent('ctrl-ray',{
   init(){
     this.el.addEventListener('triggerdown',()=>{
@@ -743,31 +867,30 @@ AFRAME.registerComponent('ctrl-ray',{
     });
   }
 });
-
 document.querySelector('a-scene').addEventListener('loaded',()=>{
   document.querySelectorAll('.btn3d').forEach(el=>el.setAttribute('diegetic-btn',''));
   const rh=document.getElementById('rhand');
   if(rh) rh.setAttribute('ctrl-ray','');
 });
 
+function selOrder(o){
+  orderAB=(o==='AB');condOrder=o;
+  document.getElementById('ord-ab').className='ord-btn'+(orderAB?' sel':'');
+  document.getElementById('ord-ba').className='ord-btn'+(!orderAB?' sel':'');
+}
+
 function setCond(c){
-  cond=c; trial=0; done=false; clearInterval(ti);
+  cond=c;trial=0;isDone=false;phase=1;clearInterval(ti);
   document.getElementById('tclock').textContent='0.0';
+  document.getElementById('subpanel').style.display='none';
   document.getElementById('diegetic-b').setAttribute('visible',c==='B');
-  if(c==='B'){
-    const g=document.getElementById('guide-arrow');
-    if(g) g.setAttribute('visible',true);
-  }
+  if(c==='B'){const g=document.getElementById('guide-arrow');if(g)g.setAttribute('visible',true);}
   document.getElementById('menu-a').style.display=c==='A'?'block':'none';
   document.getElementById('stats-a').style.display=c==='A'?'block':'none';
   const cur=document.getElementById('cur3d');
   if(cur) cur.setAttribute('visible',c==='B');
-  const cfg={
-    A:{name:'А — Non-diegetic HUD',task:'"Inventory" товчийг баруун талын цэснээс олоод дарна уу'},
-    B:{name:'В — Diegetic терминал',task:'Зүүн тийш эргэж терминалаас "Inventory" товчийг олоод дарна уу'}
-  };
-  document.getElementById('cpname').textContent=cfg[c].name;
-  document.getElementById('cptask').textContent=cfg[c].task;
+  document.getElementById('cpname').textContent=c==='A'?'А — Non-diegetic HUD':'В — Diegetic терминал';
+  updateTaskUI();
   document.getElementById('tsub').textContent=`Оролдлого 1 / ${MAX}`;
   document.querySelectorAll('.swb').forEach(b=>{
     b.className='swb'+(b.textContent.startsWith(c)?' on-'+c.toLowerCase():'');
@@ -780,17 +903,20 @@ function startStudy(){
   pid=document.getElementById('pid').value.trim()||'P01';
   document.getElementById('intro').style.display='none';
   document.getElementById('hud').style.display='block';
-  startTime=Date.now();
-  errs.A=0; errs.B=0;
-  res.A=[]; res.B=[];
-  // Start with correct condition based on order
+  genTargets();errs.A=0;errs.B=0;res.A=[];res.B=[];
+  times.A.t1=[];times.A.t2=[];times.B.t1=[];times.B.t2=[];
   setCond(orderAB?'A':'B');
 }
 
 document.addEventListener('keydown',e=>{
   if(e.key==='1') setCond('A');
   if(e.key==='2') setCond('B');
-  if(e.key==='r'||e.key==='R'){trial=0;done=false;startTimer()}
+  if(e.key==='r'||e.key==='R'){
+    trial=0;isDone=false;phase=1;
+    document.getElementById('subpanel').style.display='none';
+    if(cond==='A') document.getElementById('menu-a').style.display='block';
+    updateTaskUI();startTimer();
+  }
 });
 </script>
 </body>
