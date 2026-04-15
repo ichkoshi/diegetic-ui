@@ -3,206 +3,177 @@
 <head>
 <meta charset="UTF-8">
 <title>Diegetic UI Research Study</title>
-<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
 <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
 <style>
 :root{
-  --purple:#5b4fe8;--purple-l:#8a7bff;
-  --teal:#1cc994;--teal-l:#4de8b0;
+  --pu:#5b4fe8;--pul:#8a7bff;
+  --te:#1cc994;--tel:#4de8b0;
   --c0:#03030a;--c1:#07071a;--c2:#0d0d26;
-  --text:#e8e6ff;--muted:#4a4870;
-  --border:rgba(91,79,232,.18);--border2:rgba(91,79,232,.38);
-  --ff:'Syne',system-ui,sans-serif;
-  --fm:'Space Mono',monospace;
+  --tx:#e8e6ff;--mu:#4a4870;
+  --bo:rgba(91,79,232,.18);--bo2:rgba(91,79,232,.38);
+  --ff:'Syne',system-ui,sans-serif;--fm:'Space Mono',monospace;
 }
 *{margin:0;padding:0;box-sizing:border-box}
-body{background:var(--c0);font-family:var(--ff);overflow:hidden;color:var(--text)}
+body{background:var(--c0);font-family:var(--ff);overflow:hidden;color:var(--tx)}
 
-/* ── INTRO ── */
-#intro{
-  position:absolute;inset:0;z-index:300;
-  display:flex;align-items:center;justify-content:center;
-  background:var(--c0);
-}
-#intro::before{
-  content:'';position:absolute;inset:0;pointer-events:none;
-  background:
-    radial-gradient(ellipse 80% 55% at 50% 0%,rgba(91,79,232,.16) 0%,transparent 70%),
-    radial-gradient(ellipse 40% 40% at 85% 85%,rgba(28,201,148,.06) 0%,transparent 60%);
-}
-.gbg{
-  position:absolute;inset:0;pointer-events:none;
-  background-image:linear-gradient(rgba(91,79,232,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(91,79,232,.05) 1px,transparent 1px);
-  background-size:44px 44px;
-  mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,black 0%,transparent 100%);
-}
-.wrap{
-  position:relative;z-index:1;
-  display:grid;grid-template-columns:1fr 1fr;
-  max-width:800px;width:100%;margin:0 20px;
-  background:var(--c1);border:1px solid var(--border);border-radius:20px;overflow:hidden;
-}
-.ileft{padding:48px 44px;border-right:1px solid var(--border);display:flex;flex-direction:column;justify-content:space-between}
-.iright{padding:48px 38px;background:rgba(91,79,232,.04);display:flex;flex-direction:column}
-
-.pill{display:inline-flex;align-items:center;gap:8px;padding:5px 14px;border-radius:100px;font-size:11px;font-family:var(--fm);letter-spacing:.1em;background:rgba(91,79,232,.12);border:1px solid var(--border2);color:var(--purple-l);margin-bottom:26px;align-self:flex-start}
-.dot{width:6px;height:6px;border-radius:50%;background:var(--purple);animation:p 2s ease infinite}
+/* INTRO */
+#intro{position:absolute;inset:0;z-index:300;display:flex;align-items:center;justify-content:center;background:var(--c0)}
+#intro::before{content:'';position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse 80% 55% at 50% 0%,rgba(91,79,232,.16) 0%,transparent 70%)}
+.gbg{position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(rgba(91,79,232,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(91,79,232,.05) 1px,transparent 1px);background-size:44px 44px;mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,black 0%,transparent 100%)}
+.wrap{position:relative;z-index:1;display:grid;grid-template-columns:1fr 1fr;max-width:800px;width:100%;margin:0 20px;background:var(--c1);border:1px solid var(--bo);border-radius:20px;overflow:hidden}
+.ileft{padding:46px 42px;border-right:1px solid var(--bo);display:flex;flex-direction:column;justify-content:space-between}
+.iright{padding:46px 36px;background:rgba(91,79,232,.04);display:flex;flex-direction:column}
+.pill{display:inline-flex;align-items:center;gap:8px;padding:5px 14px;border-radius:100px;font-size:11px;font-family:var(--fm);letter-spacing:.1em;background:rgba(91,79,232,.12);border:1px solid var(--bo2);color:var(--pul);margin-bottom:24px;align-self:flex-start}
+.dt{width:6px;height:6px;border-radius:50%;background:var(--pu);animation:p 2s ease infinite}
 @keyframes p{0%,100%{opacity:1}50%{opacity:.3}}
-h1{font-size:40px;font-weight:800;line-height:1.05;letter-spacing:-.03em;margin-bottom:14px}
-h1 span{background:linear-gradient(135deg,var(--purple-l),var(--teal-l));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.sub{font-size:12px;color:var(--muted);line-height:1.75;margin-bottom:32px;font-family:var(--fm)}
-.mgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border-radius:10px;overflow:hidden;margin-bottom:32px}
-.mi{background:var(--c1);padding:14px 8px;text-align:center}
-.mv{font-size:24px;font-weight:800;color:var(--purple-l);font-family:var(--fm)}
-.ml{font-size:10px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-top:2px}
-.sbtn{width:100%;padding:15px;border-radius:10px;font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;font-family:var(--ff);background:var(--purple);color:#fff;border:none;cursor:pointer;transition:transform .15s,background .15s}
+h1{font-size:38px;font-weight:800;line-height:1.06;letter-spacing:-.03em;margin-bottom:12px}
+h1 span{background:linear-gradient(135deg,var(--pul),var(--tel));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.sub{font-size:12px;color:var(--mu);line-height:1.75;margin-bottom:30px;font-family:var(--fm)}
+.mgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--bo);border-radius:10px;overflow:hidden;margin-bottom:28px}
+.mi{background:var(--c1);padding:13px 8px;text-align:center}
+.mv{font-size:22px;font-weight:800;color:var(--pul);font-family:var(--fm)}
+.ml{font-size:10px;color:var(--mu);letter-spacing:.1em;text-transform:uppercase;margin-top:2px}
+.sbtn{width:100%;padding:14px;border-radius:10px;font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;font-family:var(--ff);background:var(--pu);color:#fff;border:none;cursor:pointer;transition:transform .15s,background .15s}
 .sbtn:hover{transform:translateY(-1px);background:#4a3ed0}
-
-.slbl{font-size:10px;font-family:var(--fm);letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:18px}
-.ccard{background:var(--c2);border:1px solid var(--border);border-radius:12px;padding:18px;margin-bottom:10px}
-.ccard:last-of-type{margin-bottom:0}
-.crow{display:flex;align-items:center;gap:10px;margin-bottom:7px}
+.slbl{font-size:10px;font-family:var(--fm);letter-spacing:.14em;text-transform:uppercase;color:var(--mu);margin-bottom:16px}
+.ccard{background:var(--c2);border:1px solid var(--bo);border-radius:12px;padding:16px;margin-bottom:8px}
+.crow{display:flex;align-items:center;gap:10px;margin-bottom:6px}
 .cbadge{font-size:10px;font-family:var(--fm);font-weight:700;padding:3px 10px;border-radius:6px;letter-spacing:.08em}
-.cbadge.a{background:rgba(91,79,232,.2);color:var(--purple-l);border:1px solid rgba(91,79,232,.3)}
-.cbadge.b{background:rgba(28,201,148,.12);color:var(--teal-l);border:1px solid rgba(28,201,148,.25)}
+.cbadge.a{background:rgba(91,79,232,.2);color:var(--pul);border:1px solid rgba(91,79,232,.3)}
+.cbadge.b{background:rgba(28,201,148,.12);color:var(--tel);border:1px solid rgba(28,201,148,.25)}
 .ctitle{font-size:13px;font-weight:700}
-.cdesc{font-size:12px;color:var(--muted);line-height:1.55;font-family:var(--fm)}
-.vs{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:11px;font-family:var(--fm);letter-spacing:.06em;margin:5px 0}
-.vs::before,.vs::after{content:'';flex:1;height:1px;background:var(--border)}
-.note{font-size:11px;color:var(--muted);font-family:var(--fm);line-height:1.6;margin-top:14px}
+.cdesc{font-size:11px;color:var(--mu);line-height:1.55;font-family:var(--fm)}
+.vs{display:flex;align-items:center;gap:10px;color:var(--mu);font-size:11px;font-family:var(--fm);letter-spacing:.06em;margin:4px 0}
+.vs::before,.vs::after{content:'';flex:1;height:1px;background:var(--bo)}
+.note{font-size:11px;color:var(--mu);font-family:var(--fm);line-height:1.6;margin-top:12px}
 
-/* ── MAIN HUD ── */
+/* HUD */
 #hud{position:absolute;inset:0;z-index:100;pointer-events:none;display:none}
-
 #prog{position:absolute;top:0;left:0;right:0;height:2px;background:rgba(255,255,255,.04)}
-#pf{height:100%;width:0%;background:linear-gradient(90deg,var(--purple),var(--teal));transition:width .6s ease}
-
-#topbar{position:absolute;top:0;left:0;right:0;padding:14px 18px;display:flex;align-items:flex-start;justify-content:space-between;background:linear-gradient(180deg,rgba(3,3,10,.95) 0%,transparent 100%)}
-.hp{background:rgba(7,7,26,.9);border:1px solid var(--border);border-radius:10px;padding:12px 16px;backdrop-filter:blur(16px)}
-#cp .tag{font-size:9px;font-family:var(--fm);letter-spacing:.14em;text-transform:uppercase;color:var(--purple);margin-bottom:5px}
+#pf{height:100%;width:0%;background:linear-gradient(90deg,var(--pu),var(--te));transition:width .6s ease}
+#topbar{position:absolute;top:0;left:0;right:0;padding:14px 18px;display:flex;align-items:flex-start;justify-content:space-between;background:linear-gradient(180deg,rgba(3,3,10,.96) 0%,transparent 100%)}
+.hp{background:rgba(7,7,26,.9);border:1px solid var(--bo);border-radius:10px;padding:12px 16px;backdrop-filter:blur(16px)}
+#cp .tag{font-size:9px;font-family:var(--fm);letter-spacing:.14em;text-transform:uppercase;color:var(--pu);margin-bottom:5px}
 #cp .name{font-size:13px;font-weight:700;margin-bottom:3px}
-#cp .task{font-size:11px;color:var(--muted);font-family:var(--fm)}
+#cp .task{font-size:11px;color:var(--mu);font-family:var(--fm)}
 #tp{text-align:right}
-#tp .tl{font-size:9px;font-family:var(--fm);letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+#tp .tl{font-size:9px;font-family:var(--fm);letter-spacing:.14em;text-transform:uppercase;color:var(--mu);margin-bottom:4px}
 #tp .tv{font-size:34px;font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:-.03em;line-height:1;font-family:var(--fm);color:#fff}
-#tp .ts{font-size:10px;color:var(--muted);font-family:var(--fm);margin-top:3px}
+#tp .ts{font-size:10px;color:var(--mu);font-family:var(--fm);margin-top:3px}
 
 /* crosshair */
-#xh{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;width:22px;height:22px}
-#xh::before,#xh::after{content:'';position:absolute;background:rgba(255,255,255,.38);border-radius:1px}
-#xh::before{width:1.5px;height:8px;left:10.25px;top:7px}
-#xh::after{width:8px;height:1.5px;left:7px;top:10.25px}
-.xring{width:22px;height:22px;border-radius:50%;border:1.5px solid rgba(255,255,255,.25)}
+#xh{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none}
+.xring{width:22px;height:22px;border-radius:50%;border:1.5px solid rgba(255,255,255,.28);display:flex;align-items:center;justify-content:center;position:relative}
+.xring::before,.xring::after{content:'';position:absolute;background:rgba(255,255,255,.36);border-radius:1px}
+.xring::before{width:1.5px;height:7px}
+.xring::after{width:7px;height:1.5px}
 
-/* bottom bar */
-#botbar{position:absolute;bottom:0;left:0;right:0;padding:14px 18px;display:flex;align-items:flex-end;justify-content:space-between;background:linear-gradient(0deg,rgba(3,3,10,.95) 0%,transparent 100%);pointer-events:auto}
-.lh{font-size:9px;font-family:var(--fm);letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:7px}
+/* bottom */
+#botbar{position:absolute;bottom:0;left:0;right:0;padding:14px 18px;display:flex;align-items:flex-end;justify-content:space-between;background:linear-gradient(0deg,rgba(3,3,10,.96) 0%,transparent 100%);pointer-events:auto}
+.lh{font-size:9px;font-family:var(--fm);letter-spacing:.14em;text-transform:uppercase;color:var(--mu);margin-bottom:7px}
 .lr{font-size:11px;padding:4px 0;border-bottom:1px solid rgba(255,255,255,.03);display:flex;gap:7px;align-items:center;font-family:var(--fm)}
 .lb{font-size:9px;padding:2px 6px;border-radius:4px;font-weight:700;flex-shrink:0}
-.lr.ok .lb{background:rgba(28,201,148,.15);color:var(--teal-l)}
+.lr.ok .lb{background:rgba(28,201,148,.15);color:var(--tel)}
 .lr.err .lb{background:rgba(200,50,50,.12);color:#f08080}
 .lt{font-weight:700;font-variant-numeric:tabular-nums}
-.lr.ok .lt{color:var(--teal-l)}
+.lr.ok .lt{color:var(--tel)}
 .lr.err .lt{color:#f08080}
-.lm{color:var(--muted);font-size:10px}
-
+.lm{color:var(--mu);font-size:10px}
 #sw{display:flex;flex-direction:column;align-items:flex-end;gap:7px}
-.sl{font-size:9px;font-family:var(--fm);letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.sl{font-size:9px;font-family:var(--fm);letter-spacing:.14em;text-transform:uppercase;color:var(--mu)}
 #swb{display:flex;gap:5px}
-.swb{padding:8px 18px;border-radius:7px;font-size:11px;font-weight:600;cursor:pointer;border:1px solid rgba(255,255,255,.07);background:rgba(255,255,255,.03);color:var(--muted);transition:all .2s;font-family:var(--ff);letter-spacing:.04em}
-.swb:hover{background:rgba(255,255,255,.07);color:var(--text)}
-.swb.on-a{background:rgba(91,79,232,.2);border-color:rgba(91,79,232,.4);color:var(--purple-l)}
-.swb.on-b{background:rgba(28,201,148,.14);border-color:rgba(28,201,148,.35);color:var(--teal-l)}
+.swb{padding:8px 18px;border-radius:7px;font-size:11px;font-weight:600;cursor:pointer;border:1px solid rgba(255,255,255,.07);background:rgba(255,255,255,.03);color:var(--mu);transition:all .2s;font-family:var(--ff);letter-spacing:.04em}
+.swb:hover{background:rgba(255,255,255,.07);color:var(--tx)}
+.swb.on-a{background:rgba(91,79,232,.2);border-color:rgba(91,79,232,.4);color:var(--pul)}
+.swb.on-b{background:rgba(28,201,148,.14);border-color:rgba(28,201,148,.35);color:var(--tel)}
 #dots{display:flex;gap:6px;margin-top:4px;justify-content:flex-end}
 .d{width:7px;height:7px;border-radius:50%;background:#1a1830;transition:all .3s}
-.d.done{background:var(--teal);box-shadow:0 0 7px rgba(28,201,148,.6)}
-.d.cur{background:var(--purple-l);transform:scale(1.3);box-shadow:0 0 9px rgba(91,79,232,.7)}
+.d.done{background:var(--te);box-shadow:0 0 7px rgba(28,201,148,.6)}
+.d.cur{background:var(--pul);transform:scale(1.3);box-shadow:0 0 9px rgba(91,79,232,.7)}
 
-/* ── CONDITION A — 2D HTML MENU ── */
-/* Эдгээр нь жинхэнэ HUD: камертай хамт хөдөлдөг HTML давхарга */
+/* ── CONDITION A: 2D HTML menu ── */
 #menu-a{
-  position:absolute;
-  right:18px;top:50%;transform:translateY(-50%);
-  z-index:150;pointer-events:auto;
-  display:none;
+  position:absolute;right:20px;top:50%;transform:translateY(-50%);
+  z-index:150;pointer-events:auto;display:none;
 }
-.menu-panel{
-  background:rgba(4,4,14,.94);
-  border:1px solid var(--border);
-  border-radius:12px;overflow:hidden;
-  min-width:170px;
-}
-.menu-header{
-  padding:10px 16px;background:rgba(91,79,232,.15);
-  border-bottom:1px solid var(--border);
-  font-size:10px;font-family:var(--fm);letter-spacing:.14em;
-  text-transform:uppercase;color:var(--purple-l);
-}
-.menu-btn{
-  display:block;width:100%;padding:13px 16px;
-  font-size:13px;font-weight:600;font-family:var(--ff);
-  background:transparent;border:none;border-bottom:1px solid rgba(255,255,255,.04);
-  color:var(--text);cursor:pointer;text-align:left;
-  transition:background .15s,color .15s;
-  position:relative;
-}
-.menu-btn::before{
-  content:'';position:absolute;left:0;top:0;bottom:0;
-  width:3px;background:currentColor;opacity:0.5;
-}
-.menu-btn:last-child{border-bottom:none}
-.menu-btn:hover{background:rgba(255,255,255,.06)}
-.menu-btn.inv{color:var(--purple-l)}
-.menu-btn.inv::before{background:var(--purple)}
-.menu-btn.map{color:#5888cc}
-.menu-btn.map::before{background:#1a4888}
-.menu-btn.sett{color:#58aa68}
-.menu-btn.sett::before{background:#185828}
+.mpanel{background:rgba(4,4,14,.95);border:1px solid var(--bo);border-radius:12px;overflow:hidden;min-width:172px;box-shadow:0 0 40px rgba(91,79,232,.15)}
+.mhead{padding:10px 16px;background:rgba(91,79,232,.14);border-bottom:1px solid var(--bo);font-size:10px;font-family:var(--fm);letter-spacing:.14em;text-transform:uppercase;color:var(--pul)}
+.mbtn{display:flex;align-items:center;gap:10px;width:100%;padding:12px 16px;font-size:12px;font-weight:600;font-family:var(--ff);background:transparent;border:none;border-bottom:1px solid rgba(255,255,255,.04);color:var(--tx);cursor:pointer;text-align:left;transition:background .15s;position:relative}
+.mbtn:last-child{border-bottom:none}
+.mbtn:hover{background:rgba(255,255,255,.06)}
+.mico{font-size:14px;flex-shrink:0}
+.mbtn::before{content:'';position:absolute;left:0;top:0;bottom:0;width:2.5px}
+.mbtn.inv{color:#bbaeff}.mbtn.inv::before{background:var(--pu)}
+.mbtn.chr{color:#88ccee}.mbtn.chr::before{background:#1a5088}
+.mbtn.mp{color:#88bbdd}.mbtn.mp::before{background:#1a4878}
+.mbtn.st{color:#88bb88}.mbtn.st::before{background:#1a5828}
+.mbtn.ql{color:#ddbb88}.mbtn.ql::before{background:#885820}
 
-/* Stats panel top-left */
-#stats-a{
-  position:absolute;left:18px;top:80px;
-  z-index:150;pointer-events:none;display:none;
-}
-.stats-panel{
-  background:rgba(4,4,14,.92);border:1px solid var(--border);
-  border-radius:10px;padding:12px 16px;min-width:160px;
-}
-.stats-title{font-size:9px;font-family:var(--fm);letter-spacing:.14em;text-transform:uppercase;color:var(--purple);margin-bottom:8px}
-.stats-row{font-size:11px;font-family:var(--fm);margin-bottom:4px}
-.stats-row:last-child{margin-bottom:0}
-.sh{color:var(--teal-l)}
-.sg{color:var(--muted)}
+/* stats */
+#stats-a{position:absolute;left:20px;top:78px;z-index:150;pointer-events:none;display:none}
+.spanel{background:rgba(4,4,14,.92);border:1px solid var(--bo);border-radius:10px;padding:12px 16px;min-width:156px}
+.stitle{font-size:9px;font-family:var(--fm);letter-spacing:.14em;text-transform:uppercase;color:var(--pu);margin-bottom:8px}
+.srow{font-size:11px;font-family:var(--fm);margin-bottom:4px;color:var(--mu)}
+.srow:last-child{margin-bottom:0}
+.sg{color:var(--tel)}
 
-/* Flash */
-#flash{position:absolute;top:46%;left:50%;transform:translate(-50%,-50%);padding:18px 36px;border-radius:14px;text-align:center;background:rgba(5,5,18,.97);border:1px solid rgba(255,255,255,.08);pointer-events:none;opacity:0;transition:opacity .2s;z-index:200;min-width:230px;font-family:var(--fm)}
+/* flash */
+#flash{position:absolute;top:46%;left:50%;transform:translate(-50%,-50%);padding:18px 38px;border-radius:14px;text-align:center;background:rgba(5,5,18,.97);border:1px solid rgba(255,255,255,.08);pointer-events:none;opacity:0;transition:opacity .2s;z-index:200;min-width:230px;font-family:var(--fm)}
 #flash.show{opacity:1}
 #flash .fm{font-size:30px;font-weight:700;margin-bottom:4px;letter-spacing:-.02em}
-#flash .fs{font-size:11px;color:var(--muted);letter-spacing:.04em}
+#flash .fs{font-size:11px;color:var(--mu);letter-spacing:.04em}
 #flash.ok{border-color:rgba(28,201,148,.3)}
-#flash.ok .fm{color:var(--teal-l)}
+#flash.ok .fm{color:var(--tel)}
 #flash.err{border-color:rgba(200,50,50,.2)}
 #flash.err .fm{color:#f08080}
 
 /* END */
 #end{position:absolute;inset:0;z-index:400;background:rgba(3,3,10,.97);display:none;align-items:center;justify-content:center}
-.ew{background:var(--c1);border:1px solid var(--border);border-radius:20px;padding:44px 48px;min-width:460px;text-align:center;position:relative;overflow:hidden}
-.ew::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--purple),var(--teal))}
+.ew{background:var(--c1);border:1px solid var(--bo);border-radius:20px;padding:42px 46px;min-width:460px;text-align:center;position:relative;overflow:hidden}
+.ew::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--pu),var(--te))}
 .ew h2{font-size:24px;font-weight:800;letter-spacing:-.02em;margin-bottom:6px}
-.ep{font-size:12px;color:var(--muted);font-family:var(--fm);margin-bottom:28px;letter-spacing:.04em}
-#rg{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:24px}
-.rc{background:var(--c2);border:1px solid var(--border);border-radius:12px;padding:16px;text-align:left}
-.rl{font-size:9px;font-family:var(--fm);letter-spacing:.12em;text-transform:uppercase;margin-bottom:8px}
-.rc.a .rl{color:var(--purple)}
-.rc.b .rl{color:var(--teal-d,#0e8f63)}
-.rv{font-size:30px;font-weight:800;font-family:var(--fm);letter-spacing:-.02em}
-.rc.a .rv{color:var(--purple-l)}
-.rc.b .rv{color:var(--teal-l)}
-.rs{font-size:10px;color:var(--muted);font-family:var(--fm);margin-top:3px}
+.ep{font-size:12px;color:var(--mu);font-family:var(--fm);margin-bottom:26px;letter-spacing:.04em}
+#rg{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:22px}
+.rc{background:var(--c2);border:1px solid var(--bo);border-radius:12px;padding:15px;text-align:left}
+.rl{font-size:9px;font-family:var(--fm);letter-spacing:.12em;text-transform:uppercase;margin-bottom:7px}
+.rc.a .rl{color:var(--pu)}.rc.b .rl{color:#0e8f63}
+.rv{font-size:28px;font-weight:800;font-family:var(--fm);letter-spacing:-.02em}
+.rc.a .rv{color:var(--pul)}.rc.b .rv{color:var(--tel)}
+.rs{font-size:10px;color:var(--mu);font-family:var(--fm);margin-top:3px}
 .rc.win{border-color:rgba(255,200,50,.22);background:rgba(255,200,50,.03)}
 .rc.win .rl::after{content:' 🏆'}
-.rbtn{padding:11px 28px;border-radius:8px;font-size:11px;font-family:var(--fm);letter-spacing:.06em;text-transform:uppercase;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);color:var(--muted);cursor:pointer;transition:all .2s}
-.rbtn:hover{background:rgba(255,255,255,.09);color:var(--text)}
+.rbtn{padding:11px 28px;border-radius:8px;font-size:11px;font-family:var(--fm);letter-spacing:.06em;text-transform:uppercase;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);color:var(--mu);cursor:pointer;transition:all .2s}
+.rbtn:hover{background:rgba(255,255,255,.09);color:var(--tx)}
+.rbtn.green{background:rgba(28,201,148,.12);border-color:rgba(28,201,148,.3);color:var(--tel)}
+.rbtn.green:hover{background:rgba(28,201,148,.2)}
+.rbtn.pu{background:rgba(91,79,232,.14);border-color:rgba(91,79,232,.35);color:var(--pul)}
+.rbtn.pu:hover{background:rgba(91,79,232,.22)}
+.ebtns{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+
+/* participant input */
+.pid-row{display:flex;gap:8px;margin-bottom:22px;align-items:center}
+.pid-row label{font-size:11px;font-family:var(--fm);color:var(--mu);white-space:nowrap;letter-spacing:.06em}
+.pid-row input{flex:1;background:var(--c2);border:1px solid var(--bo);border-radius:7px;padding:9px 12px;font-size:12px;font-family:var(--fm);color:var(--tx);outline:none}
+.pid-row input:focus{border-color:var(--pu)}
+.ord-row{display:flex;gap:6px;margin-bottom:22px}
+.ord-btn{flex:1;padding:9px;border-radius:8px;font-size:11px;font-family:var(--fm);cursor:pointer;border:1px solid var(--bo);background:rgba(255,255,255,.03);color:var(--mu);transition:all .2s;text-align:center}
+.ord-btn:hover{background:rgba(255,255,255,.06)}
+.ord-btn.sel{background:rgba(91,79,232,.2);border-color:rgba(91,79,232,.4);color:var(--pul)}
+.ord-lbl{font-size:9px;font-family:var(--fm);letter-spacing:.12em;text-transform:uppercase;color:var(--mu);margin-bottom:7px}
+
+/* all data modal */
+#alldata{position:absolute;inset:0;z-index:500;background:rgba(3,3,10,.97);display:none;align-items:flex-start;justify-content:center;overflow-y:auto;padding:32px 16px}
+.adwrap{background:var(--c1);border:1px solid var(--bo);border-radius:16px;width:100%;max-width:820px;padding:32px;position:relative}
+.adwrap h3{font-size:18px;font-weight:800;margin-bottom:6px;letter-spacing:-.02em}
+.ad-sub{font-size:11px;color:var(--mu);font-family:var(--fm);margin-bottom:24px}
+.ad-table{width:100%;border-collapse:collapse;font-family:var(--fm);font-size:11px}
+.ad-table th{text-align:left;padding:8px 12px;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--mu);border-bottom:1px solid var(--bo)}
+.ad-table td{padding:9px 12px;border-bottom:1px solid rgba(255,255,255,.03);color:var(--tx)}
+.ad-table tr:hover td{background:rgba(255,255,255,.02)}
+.ad-close{position:absolute;top:20px;right:20px;background:rgba(255,255,255,.05);border:1px solid var(--bo);border-radius:7px;padding:6px 14px;font-size:11px;font-family:var(--fm);color:var(--mu);cursor:pointer;transition:all .2s}
+.ad-close:hover{background:rgba(255,255,255,.1);color:var(--tx)}
+.no-data{font-size:12px;color:var(--mu);font-family:var(--fm);padding:24px 0;text-align:center}
 </style>
 </head>
 <body>
@@ -213,15 +184,24 @@ h1 span{background:linear-gradient(135deg,var(--purple-l),var(--teal-l));-webkit
   <div class="wrap">
     <div class="ileft">
       <div>
-        <div class="pill"><div class="dot"></div>Судалгааны туршилт</div>
-        <h1>Diegetic<br>UI <span>Research</span></h1>
-        <p class="sub">Виртуал орчны хоёр UI загварыг харьцуулах туршилт.<br>Нөхцөл тус бүрт гурван удаа "Inventory"<br>товчийг аль болох хурдан олоод дарна уу.</p>
+        <div class="pill"><div class="dt"></div>Судалгааны туршилт</div>
+        <h1>Diegetic UI<br><span>Research</span></h1>
+        <p class="sub">Виртуал орчны хоёр UI загварын харьцуулалт.<br>Нөхцөл тус бүрт гурван удаа "Inventory"<br>товчийг аль болох хурдан олоод дарна уу.</p>
       </div>
       <div>
         <div class="mgrid">
           <div class="mi"><div class="mv">2</div><div class="ml">Нөхцөл</div></div>
           <div class="mi"><div class="mv">3×</div><div class="ml">Оролдлого</div></div>
           <div class="mi"><div class="mv">~5'</div><div class="ml">Хугацаа</div></div>
+        </div>
+        <div class="pid-row">
+          <label>Оролцогч №</label>
+          <input id="pid" type="text" placeholder="01" maxlength="4">
+        </div>
+        <div class="ord-lbl">Нөхцлийн дараалал</div>
+        <div class="ord-row">
+          <div class="ord-btn sel" id="ord-ab" onclick="selOrder('AB')">A → B</div>
+          <div class="ord-btn" id="ord-ba" onclick="selOrder('BA')">B → A</div>
         </div>
         <button class="sbtn" onclick="startStudy()">Туршилт эхлэх →</button>
       </div>
@@ -231,15 +211,15 @@ h1 span{background:linear-gradient(135deg,var(--purple-l),var(--teal-l));-webkit
       <div>
         <div class="ccard">
           <div class="crow"><div class="cbadge a">А</div><div class="ctitle">Non-diegetic HUD</div></div>
-          <div class="cdesc">Цэс дэлгэцэнд наалдсан давхарга — хаашаа харсан ч үргэлж баруун талд харагдана.</div>
+          <div class="cdesc">Цэс дэлгэцэнд наалдсан 2D давхарга — хаашаа харсан ч баруун талд байна. Mouse-аар дарна.</div>
         </div>
         <div class="vs">эсрэгээр</div>
         <div class="ccard">
-          <div class="crow"><div class="cbadge b">В</div><div class="ctitle">Diegetic объект</div></div>
-          <div class="cdesc">Цэс виртуал ертөнц дотор ширээн дээр байна — зүүн тийш эргэж харах шаардлагатай.</div>
+          <div class="crow"><div class="cbadge b">В</div><div class="ctitle">Diegetic терминал</div></div>
+          <div class="cdesc">Цэс ертөнц дотор босоо терминал — зүүн тийш эргэж, cursor чиглүүлж дарна.</div>
         </div>
       </div>
-      <p class="note">↑ Хоёр нөхцлийг аль алиныг нь туршина. Нөхцлийн дараалал судлаач тогтооно.</p>
+      <p class="note">↑ Keyboard: <b>1</b> = А нөхцөл, <b>2</b> = В нөхцөл, <b>R</b> = дахин</p>
     </div>
   </div>
 </div>
@@ -247,12 +227,11 @@ h1 span{background:linear-gradient(135deg,var(--purple-l),var(--teal-l));-webkit
 <!-- 2D HUD -->
 <div id="hud">
   <div id="prog"><div id="pf"></div></div>
-
   <div id="topbar">
     <div class="hp" id="cp">
       <div class="tag">Одоогийн нөхцөл</div>
       <div class="name" id="cpname">А — Non-diegetic HUD</div>
-      <div class="task" id="cptask">"Inventory" товчийг баруун талаас олоод дарна уу</div>
+      <div class="task" id="cptask">"Inventory" товчийг баруун талын цэснээс олоод дарна уу</div>
     </div>
     <div class="hp" id="tp">
       <div class="tl">Хугацаа</div>
@@ -260,9 +239,7 @@ h1 span{background:linear-gradient(135deg,var(--purple-l),var(--teal-l));-webkit
       <div class="ts" id="tsub">Оролдлого 1 / 3</div>
     </div>
   </div>
-
   <div id="xh"><div class="xring"></div></div>
-
   <div id="botbar">
     <div class="hp" style="min-width:250px">
       <div class="lh">Бүртгэл</div>
@@ -283,21 +260,24 @@ h1 span{background:linear-gradient(135deg,var(--purple-l),var(--teal-l));-webkit
   </div>
 </div>
 
-<!-- CONDITION A: 2D HTML menu (жинхэнэ non-diegetic) -->
+<!-- CONDITION A: 2D HTML buttons (жинхэнэ non-diegetic) -->
 <div id="menu-a">
-  <div class="menu-panel">
-    <div class="menu-header">Menu</div>
-    <button class="menu-btn inv" onclick="hitHTML('Inventory')">📦 Inventory</button>
-    <button class="menu-btn map"  onclick="hitHTML('Map')">🗺 Map</button>
-    <button class="menu-btn sett" onclick="hitHTML('Settings')">⚙ Settings</button>
+  <div class="mpanel">
+    <div class="mhead">Menu</div>
+    <button class="mbtn chr" onclick="hitA('Character')"><span class="mico">👤</span>Character</button>
+    <button class="mbtn inv" onclick="hitA('Inventory')"><span class="mico">📦</span>Inventory</button>
+    <button class="mbtn mp"  onclick="hitA('Map')"><span class="mico">🗺</span>Map</button>
+    <button class="mbtn st"  onclick="hitA('Settings')"><span class="mico">⚙</span>Settings</button>
+    <button class="mbtn ql"  onclick="hitA('Quest Log')"><span class="mico">📜</span>Quest Log</button>
   </div>
 </div>
 
 <div id="stats-a">
-  <div class="stats-panel">
-    <div class="stats-title">Status</div>
-    <div class="stats-row sh">HP ▓▓▓▓▓▓▓▓░░ 85</div>
-    <div class="stats-row sg">Score 420 · Level 3</div>
+  <div class="spanel">
+    <div class="stitle">Status</div>
+    <div class="srow sg">HP ▓▓▓▓▓▓▓░░░  72</div>
+    <div class="srow">Score 1,240 · Lv 5</div>
+    <div class="srow" style="color:#ddbb88;margin-top:4px">⚠ Low ammo</div>
   </div>
 </div>
 
@@ -307,181 +287,229 @@ h1 span{background:linear-gradient(135deg,var(--purple-l),var(--teal-l));-webkit
 <div id="end">
   <div class="ew">
     <h2>Туршилт дууслаа ✓</h2>
-    <p class="ep">Доорх үр дүнг судлаачид өгнө үү</p>
+    <p class="ep" id="ep-pid">Оролцогч — · Дараалал —</p>
     <div id="rg"></div>
-    <button class="rbtn" onclick="location.reload()">Дахин эхлэх</button>
+    <div class="ebtns">
+      <button class="rbtn green" onclick="downloadCSV()">⬇ CSV татах</button>
+      <button class="rbtn pu" onclick="showAllData()">📊 Бүх өгөгдөл</button>
+      <button class="rbtn" onclick="location.reload()">Дараагийн оролцогч →</button>
+    </div>
   </div>
 </div>
 
-<!-- A-FRAME SCENE -->
+<!-- ALL DATA MODAL -->
+<div id="alldata">
+  <div class="adwrap">
+    <button class="ad-close" onclick="document.getElementById('alldata').style.display='none'">✕ Хаах</button>
+    <h3>Бүх оролцогчдын өгөгдөл</h3>
+    <p class="ad-sub" id="ad-count">Нийт 0 оролцогч</p>
+    <div id="ad-body"></div>
+    <div style="margin-top:20px;display:flex;gap:8px">
+      <button class="rbtn green" onclick="downloadAllCSV()">⬇ Бүгдийг CSV татах</button>
+      <button class="rbtn" style="color:#e07070;border-color:rgba(220,50,50,.2)" onclick="clearAll()">🗑 Бүх өгөгдөл устгах</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+     A-FRAME SCENE
+════════════════════════════════════ -->
 <a-scene vr-mode-ui="enabled:true" renderer="antialias:true;logarithmicDepthBuffer:true">
-  <a-sky color="#03030a"></a-sky>
+  <a-sky color="#04040e"></a-sky>
 
   <!-- Floor -->
   <a-plane position="0 0 0" rotation="-90 0 0" width="26" height="26"
-           material="color:#06061a;roughness:0.95"></a-plane>
+           material="color:#07071c;roughness:0.95"></a-plane>
   <a-plane position="0 0.004 0" rotation="-90 0 0" width="26" height="26"
-           material="shader:flat;color:#0c0c28;opacity:0.5;wireframe:true"></a-plane>
+           material="shader:flat;color:#0d0d2a;opacity:0.5;wireframe:true"></a-plane>
 
   <!-- Walls -->
-  <a-box position="0 3 -9.5" width="19" height="6.2" depth="0.18" material="color:#08081e;roughness:0.92"></a-box>
-  <a-box position="-9.5 3 0" width="0.18" height="6.2" depth="19" material="color:#07071c"></a-box>
-  <a-box position="9.5 3 0" width="0.18" height="6.2" depth="19" material="color:#07071c"></a-box>
+  <a-box position="0 3 -9.5" width="19" height="6.2" depth="0.18" material="color:#09091e"></a-box>
+  <a-box position="-9.5 3 0" width="0.18" height="6.2" depth="19" material="color:#08081c"></a-box>
+  <a-box position="9.5 3 0" width="0.18" height="6.2" depth="19" material="color:#08081c"></a-box>
   <a-box position="0 6.1 0" width="19" height="0.18" depth="19" material="color:#04040e"></a-box>
 
-  <!-- Wall accents -->
-  <a-box position="0 0.025 -9.38" width="19" height="0.05" depth="0.06"
-         material="shader:flat;color:#5b4fe8;opacity:0.4"></a-box>
-  <a-box position="-9.38 0.025 0" width="0.06" height="0.05" depth="19"
-         material="shader:flat;color:#5b4fe8;opacity:0.18"></a-box>
+  <!-- Wall glow lines -->
+  <a-box position="0 0.025 -9.38" width="19" height="0.05" depth="0.05" material="shader:flat;color:#5b4fe8;opacity:0.45"></a-box>
+  <a-box position="-9.38 0.025 0" width="0.05" height="0.05" depth="19" material="shader:flat;color:#5b4fe8;opacity:0.2"></a-box>
 
-  <!-- Ceiling lights -->
-  <a-cylinder position="-3.5 6.05 -4.5" radius="0.5" height="0.06" material="shader:flat;color:#5b4fe8;opacity:0.88"></a-cylinder>
-  <a-cylinder position="3.5 6.05 -4.5" radius="0.5" height="0.06" material="shader:flat;color:#1cc994;opacity:0.88"></a-cylinder>
-  <a-cylinder position="0 6.05 -7" radius="0.38" height="0.06" material="shader:flat;color:#8a7bff;opacity:0.7"></a-cylinder>
-  <a-light type="point" position="-3.5 5.6 -4.5" color="#5b4fe8" intensity="0.9" distance="13"></a-light>
-  <a-light type="point" position="3.5 5.6 -4.5" color="#1cc994" intensity="0.6" distance="13"></a-light>
-  <a-light type="point" position="0 5.6 -7" color="#8a7bff" intensity="0.4" distance="10"></a-light>
-  <a-light type="ambient" color="#0d0d22" intensity="2.0"></a-light>
+  <!-- Main lights — brighter than before -->
+  <a-light type="ambient" color="#1a1a3a" intensity="2.8"></a-light>
+  <a-light type="point" position="0 5 0" color="#ffffff" intensity="0.5" distance="18"></a-light>
+  <a-light type="point" position="-4 5.5 -4" color="#5b4fe8" intensity="1.2" distance="14"></a-light>
+  <a-light type="point" position="4 5.5 -4" color="#1cc994" intensity="0.8" distance="14"></a-light>
+  <a-light type="point" position="0 5.5 -8" color="#8a7bff" intensity="0.6" distance="12"></a-light>
 
-  <!-- Floor lines -->
-  <a-box position="0 0.005 -4" width="17" height="0.01" depth="0.018" material="shader:flat;color:#5b4fe8;opacity:0.18"></a-box>
-  <a-box position="0 0.005 -7" width="17" height="0.01" depth="0.018" material="shader:flat;color:#1cc994;opacity:0.13"></a-box>
+  <!-- Ceiling fixtures -->
+  <a-cylinder position="-4 6.02 -4" radius="0.45" height="0.06" material="shader:flat;color:#5b4fe8;opacity:0.9"></a-cylinder>
+  <a-cylinder position="4 6.02 -4" radius="0.45" height="0.06" material="shader:flat;color:#1cc994;opacity:0.9"></a-cylinder>
+  <a-cylinder position="0 6.02 -8" radius="0.38" height="0.06" material="shader:flat;color:#8a7bff;opacity:0.75"></a-cylinder>
 
-  <!-- Env: server rack -->
-  <a-box position="-6.5 1.2 -5" width="0.9" height="2.4" depth="0.8" material="color:#0a0a1c;metalness:0.55;roughness:0.4"></a-box>
-  <a-box position="-6.5 2.4 -4.62" width="0.88" height="0.007" depth="0.005" material="shader:flat;color:#5b4fe8;opacity:0.7"></a-box>
-  <a-box position="-6.5 2.1 -4.62" width="0.88" height="0.007" depth="0.005" material="shader:flat;color:#1cc994;opacity:0.5"></a-box>
-  <a-light type="point" position="-6.5 2 -4.5" color="#5b4fe8" intensity="0.2" distance="2.5"></a-light>
+  <!-- Floor accent lines -->
+  <a-box position="0 0.005 -4" width="17" height="0.01" depth="0.018" material="shader:flat;color:#5b4fe8;opacity:0.2"></a-box>
+  <a-box position="0 0.005 -7" width="17" height="0.01" depth="0.018" material="shader:flat;color:#1cc994;opacity:0.15"></a-box>
 
-  <!-- Env: cylinder -->
-  <a-cylinder position="6 0.8 -4.8" radius="0.42" height="1.6" material="color:#0a1814;metalness:0.4;roughness:0.6"></a-cylinder>
-  <a-cylinder position="6 1.6 -4.8" radius="0.43" height="0.06" material="shader:flat;color:#1cc994;opacity:0.5"></a-cylinder>
-  <a-light type="point" position="6 1.8 -4.8" color="#1cc994" intensity="0.25" distance="3"></a-light>
+  <!-- Env objects -->
+  <a-box position="-7 1.2 -5" width="0.9" height="2.4" depth="0.8" material="color:#0a0a1c;metalness:0.5"></a-box>
+  <a-box position="-7 2.4 -4.62" width="0.88" height="0.007" depth="0.005" material="shader:flat;color:#5b4fe8;opacity:0.8"></a-box>
+  <a-light type="point" position="-7 2 -4.6" color="#5b4fe8" intensity="0.3" distance="3"></a-light>
 
-  <!-- Console far wall -->
-  <a-box position="0 1.5 -9.3" width="3.2" height="1.2" depth="0.12" material="color:#09091e;metalness:0.7;roughness:0.25"></a-box>
-  <a-plane position="0 1.5 -9.22" width="2.8" height="0.9" material="shader:flat;color:#04040e;opacity:1"></a-plane>
-  <a-text value="RESEARCH LAB — UI COMPARISON STUDY" position="0 1.62 -9.18" color="#5b4fe8" opacity="0.4" width="3.2" align="center" font="roboto"></a-text>
-  <a-text value="CONDITION ACTIVE" position="0 1.42 -9.18" color="#1cc994" opacity="0.3" width="2.4" align="center" font="roboto"></a-text>
+  <a-cylinder position="6.5 0.8 -5" radius="0.4" height="1.6" material="color:#0a1814;metalness:0.4"></a-cylinder>
+  <a-cylinder position="6.5 1.6 -5" radius="0.41" height="0.05" material="shader:flat;color:#1cc994;opacity:0.6"></a-cylinder>
+  <a-light type="point" position="6.5 1.8 -5" color="#1cc994" intensity="0.3" distance="3"></a-light>
 
-  <!-- Camera (no HUD children — HUD is HTML) -->
+  <!-- Far wall console -->
+  <a-box position="0 1.5 -9.3" width="3.2" height="1.2" depth="0.12" material="color:#09091e;metalness:0.7"></a-box>
+  <a-plane position="0 1.5 -9.22" width="2.8" height="0.9" material="shader:flat;color:#04040e"></a-plane>
+  <a-text value="RESEARCH LAB — UI COMPARISON STUDY ACTIVE" position="0 1.62 -9.18" color="#5b4fe8" opacity="0.5" width="3.0" align="center" font="roboto"></a-text>
+
+  <!-- Camera -->
   <a-entity id="rig" position="0 1.65 2.2">
     <a-camera id="cam" look-controls wasd-controls="acceleration:22">
-      <!-- Cursor only for Condition B (3D buttons) -->
-      <a-cursor id="cursor3d"
-        color="#ffffff" opacity="0.3"
-        raycaster="objects:.btn3d;near:0.01;far:22"
+      <!-- Cursor for Condition B only -->
+      <a-cursor id="cur3d"
+        raycaster="objects:.btn3d;near:0.1;far:25"
         fuse="false"
-        geometry="primitive:ring;radiusInner:0.010;radiusOuter:0.016"
-        material="shader:flat;color:#fff;opacity:0.3">
+        geometry="primitive:ring;radiusInner:0.012;radiusOuter:0.018"
+        material="shader:flat;color:#4de8b0;opacity:0.7">
       </a-cursor>
     </a-camera>
   </a-entity>
 
-  <!-- VR controller -->
   <a-entity id="rhand" oculus-touch-controls="hand:right"
-    raycaster="objects:.btn3d;far:22;lineColor:#8a7bff;lineOpacity:0.4">
+    raycaster="objects:.btn3d;far:25;lineColor:#4de8b0;lineOpacity:0.5">
   </a-entity>
   <a-entity oculus-touch-controls="hand:left"></a-entity>
 
   <!-- ══════════════════════════════════
-       CONDITION B — DIEGETIC TABLE DEVICE
-       Ертөнц дотор — зүүн тийш харах ёстой!
+       CONDITION B: DIEGETIC TERMINAL KIOSK
+       Босоо терминал — зүүн тийш эргэж харна
+       Position: (-3.2, 0, -3.5), screen faces +Z (toward player)
   ══════════════════════════════════ -->
   <a-entity id="diegetic-b" visible="false">
 
-    <!-- Table -->
-    <a-box position="-3.8 0.46 -4.2" width="1.7" height="0.065" depth="1.25"
-           material="color:#1c1008;roughness:0.5;metalness:0.22"></a-box>
-    <a-box position="-3.8 0.494 -4.2" width="1.71" height="0.012" depth="1.26"
-           material="shader:flat;color:#1cc994;opacity:0.15"></a-box>
-    <a-cylinder position="-4.55 0.23 -3.6" radius="0.055" height="0.46" color="#120a04"></a-cylinder>
-    <a-cylinder position="-3.05 0.23 -3.6" radius="0.055" height="0.46" color="#120a04"></a-cylinder>
-    <a-cylinder position="-4.55 0.23 -4.8" radius="0.055" height="0.46" color="#120a04"></a-cylinder>
-    <a-cylinder position="-3.05 0.23 -4.8" radius="0.055" height="0.46" color="#120a04"></a-cylinder>
+    <!-- Terminal base pillar -->
+    <a-cylinder position="-3.2 0.7 -3.5"
+                radius="0.12" height="1.4"
+                material="color:#08080e;metalness:0.9;roughness:0.1"></a-cylinder>
+    <a-cylinder position="-3.2 0.02 -3.5"
+                radius="0.32" height="0.04"
+                material="color:#0c0c1c;metalness:0.8"></a-cylinder>
 
-    <!-- Device body -->
-    <a-box position="-3.8 0.532 -4.2" width="0.82" height="0.06" depth="0.62"
-           material="color:#06060e;metalness:0.94;roughness:0.04"></a-box>
-    <a-box position="-3.8 0.534 -4.2" width="0.83" height="0.062" depth="0.63"
-           material="shader:flat;color:#1cc994;opacity:0.17"></a-box>
+    <!-- Terminal housing -->
+    <a-box position="-3.2 1.72 -3.5"
+           width="0.85" height="1.05" depth="0.14"
+           material="color:#07070f;metalness:0.88;roughness:0.08"></a-box>
+    <!-- Housing edge glow -->
+    <a-box position="-3.2 1.72 -3.44"
+           width="0.87" height="1.07" depth="0.005"
+           material="shader:flat;color:#1cc994;opacity:0.22"></a-box>
 
-    <!-- Screen background -->
-    <a-plane position="-3.8 0.565 -4.2" rotation="-90 0 0"
-             width="0.74" height="0.54"
-             material="shader:flat;color:#02020c;opacity:1"></a-plane>
-    <a-plane position="-3.8 0.566 -4.2" rotation="-90 0 0"
-             width="0.74" height="0.54"
-             material="shader:flat;color:#081414;opacity:0.25;wireframe:true"></a-plane>
+    <!-- Screen bezel -->
+    <a-box position="-3.2 1.72 -3.43"
+           width="0.79" height="0.96" depth="0.005"
+           material="shader:flat;color:#02020a;opacity:1"></a-box>
 
-    <!-- Header -->
-    <a-plane position="-3.8 0.567 -3.96" rotation="-90 0 0"
-             width="0.74" height="0.08"
-             material="shader:flat;color:#051410;opacity:1"></a-plane>
-    <a-text value="DEVICE MENU" position="-3.8 0.57 -3.96"
-            rotation="-90 0 0" color="#1cc994" width="1.3" align="center" font="roboto"></a-text>
-    <a-plane position="-3.8 0.567 -4.005" rotation="-90 0 0"
-             width="0.74" height="0.005"
-             material="shader:flat;color:#1cc994;opacity:0.35"></a-plane>
+    <!-- Screen bg -->
+    <a-plane id="screen-bg" position="-3.2 1.72 -3.42"
+             width="0.73" height="0.88"
+             material="shader:flat;color:#02020a;opacity:1"></a-plane>
 
-    <!-- INVENTORY — 3D clickable button -->
-    <a-entity class="btn3d" data-label="Inventory"
-              position="-3.8 0.567 -4.13">
-      <a-plane rotation="-90 0 0" width="0.66" height="0.088"
-               material="shader:flat;color:#0c1830;opacity:1" class="bbg"></a-plane>
-      <a-plane rotation="-90 0 0" position="-0.33 0.001 0" width="0.006" height="0.088"
+    <!-- Screen scanlines -->
+    <a-plane position="-3.2 1.72 -3.415" width="0.73" height="0.88"
+             material="shader:flat;color:#081a10;opacity:0.3;wireframe:true"></a-plane>
+
+    <!-- Screen header -->
+    <a-plane position="-3.2 2.12 -3.41" width="0.73" height="0.1"
+             material="shader:flat;color:#051510;opacity:1"></a-plane>
+    <a-text value="DEVICE MENU" position="-3.2 2.12 -3.4"
+            color="#1cc994" width="1.5" align="center" font="roboto"></a-text>
+    <!-- Divider -->
+    <a-plane position="-3.2 2.065 -3.41" width="0.73" height="0.005"
+             material="shader:flat;color:#1cc994;opacity:0.4"></a-plane>
+
+    <!-- ── 5 BUTTONS — class="btn3d" on <a-plane> directly ──
+         Raycaster нь mesh-тэй элемент дээр ажилладаг.
+         Тиймд class-ийг geometry бүхий <a-plane> дээр тавина.
+    ── -->
+
+    <!-- Character -->
+    <a-plane class="btn3d" data-label="Character"
+             position="-3.2 2.0 -3.41" width="0.66" height="0.082"
+             material="shader:flat;color:#0e1828;opacity:1">
+      <a-plane position="-0.33 0 0.001" width="0.006" height="0.082"
+               material="shader:flat;color:#1a4888;opacity:1"></a-plane>
+      <a-text value="Character" position="0.02 0 0.005"
+              color="#88ccee" width="1.2" align="center" font="roboto"></a-text>
+    </a-plane>
+
+    <!-- Inventory (TARGET) -->
+    <a-plane class="btn3d" data-label="Inventory"
+             position="-3.2 1.9 -3.41" width="0.66" height="0.082"
+             material="shader:flat;color:#0c1630;opacity:1">
+      <a-plane position="-0.33 0 0.001" width="0.006" height="0.082"
                material="shader:flat;color:#5b4fe8;opacity:1"></a-plane>
-      <a-text value="Inventory" position="-3.8 0.571 -4.13"
-              rotation="-90 0 0" color="#9a8aff" width="1.24" align="center" font="roboto"></a-text>
-    </a-entity>
+      <a-text value="Inventory" position="0.02 0 0.005"
+              color="#9a8aff" width="1.2" align="center" font="roboto"></a-text>
+    </a-plane>
 
-    <!-- MAP -->
-    <a-entity class="btn3d" data-label="Map"
-              position="-3.8 0.567 -4.24">
-      <a-plane rotation="-90 0 0" width="0.66" height="0.088"
-               material="shader:flat;color:#081620;opacity:1" class="bbg"></a-plane>
-      <a-plane rotation="-90 0 0" position="-0.33 0.001 0" width="0.006" height="0.088"
+    <!-- Map -->
+    <a-plane class="btn3d" data-label="Map"
+             position="-3.2 1.8 -3.41" width="0.66" height="0.082"
+             material="shader:flat;color:#081620;opacity:1">
+      <a-plane position="-0.33 0 0.001" width="0.006" height="0.082"
                material="shader:flat;color:#1a4878;opacity:1"></a-plane>
-      <a-text value="Map" position="-3.8 0.571 -4.24"
-              rotation="-90 0 0" color="#5888b8" width="1.24" align="center" font="roboto"></a-text>
-    </a-entity>
+      <a-text value="Map" position="0.02 0 0.005"
+              color="#5888b8" width="1.2" align="center" font="roboto"></a-text>
+    </a-plane>
 
-    <!-- SETTINGS -->
-    <a-entity class="btn3d" data-label="Settings"
-              position="-3.8 0.567 -4.35">
-      <a-plane rotation="-90 0 0" width="0.66" height="0.088"
-               material="shader:flat;color:#08160a;opacity:1" class="bbg"></a-plane>
-      <a-plane rotation="-90 0 0" position="-0.33 0.001 0" width="0.006" height="0.088"
+    <!-- Settings -->
+    <a-plane class="btn3d" data-label="Settings"
+             position="-3.2 1.7 -3.41" width="0.66" height="0.082"
+             material="shader:flat;color:#08160a;opacity:1">
+      <a-plane position="-0.33 0 0.001" width="0.006" height="0.082"
                material="shader:flat;color:#185828;opacity:1"></a-plane>
-      <a-text value="Settings" position="-3.8 0.571 -4.35"
-              rotation="-90 0 0" color="#58a868" width="1.24" align="center" font="roboto"></a-text>
+      <a-text value="Settings" position="0.02 0 0.005"
+              color="#58aa68" width="1.2" align="center" font="roboto"></a-text>
+    </a-plane>
+
+    <!-- Quest Log -->
+    <a-plane class="btn3d" data-label="Quest Log"
+             position="-3.2 1.6 -3.41" width="0.66" height="0.082"
+             material="shader:flat;color:#181208;opacity:1">
+      <a-plane position="-0.33 0 0.001" width="0.006" height="0.082"
+               material="shader:flat;color:#887018;opacity:1"></a-plane>
+      <a-text value="Quest Log" position="0.02 0 0.005"
+              color="#ddaa58" width="1.2" align="center" font="roboto"></a-text>
+    </a-plane>
+
+    <!-- Screen glow light -->
+    <a-light type="point" position="-3.2 1.72 -3.2"
+             color="#1cc994" intensity="0.6" distance="4.5"></a-light>
+    <a-sphere position="-3.2 1.72 -3.3" radius="0.6"
+              material="shader:flat;color:#1cc994;opacity:0.04"></a-sphere>
+
+    <!-- Direction arrow + label (only shows on first trial) -->
+    <a-entity id="guide-arrow">
+      <a-entity position="-3.2 2.55 -3.5">
+        <a-plane width="1.3" height="0.26"
+                 material="shader:flat;color:#030e08;opacity:0.92"></a-plane>
+        <a-plane position="0 0.13 0.001" width="1.3" height="0.005"
+                 material="shader:flat;color:#1cc994;opacity:0.4"></a-plane>
+        <a-text value="← Терминал энд байна"
+                position="0 0 0.007" color="#1cc994"
+                width="2.1" align="center" font="roboto"></a-text>
+      </a-entity>
+      <a-cone position="-3.2 2.22 -3.5" rotation="180 0 0"
+              radius-bottom="0.09" radius-top="0" height="0.28"
+              material="shader:flat;color:#1cc994;opacity:0.5"></a-cone>
     </a-entity>
 
-    <!-- Glow -->
-    <a-sphere position="-3.8 0.58 -4.2" radius="0.52"
-              material="shader:flat;color:#1cc994;opacity:0.03"></a-sphere>
-    <a-light type="point" position="-3.8 0.9 -4.2" color="#1cc994" intensity="0.35" distance="3.5"></a-light>
-
-    <!-- Guide arrow -->
-    <a-entity position="-3.8 1.95 -4.2">
-      <a-plane width="1.2" height="0.24"
-               material="shader:flat;color:#030e08;opacity:0.92"></a-plane>
-      <a-plane position="0 0.12 0.001" width="1.2" height="0.004"
-               material="shader:flat;color:#1cc994;opacity:0.4"></a-plane>
-      <a-text value="▼  Device — Цэс энд байна"
-              position="0 0 0.006" color="#1cc994" width="1.9" align="center" font="roboto"></a-text>
-    </a-entity>
-    <a-cone position="-3.8 1.6 -4.2" rotation="180 0 0"
-            radius-bottom="0.09" radius-top="0" height="0.28"
-            material="shader:flat;color:#1cc994;opacity:0.4"></a-cone>
   </a-entity>
 
-  <!-- VR text flash -->
-  <a-entity id="vrfl" position="0 2.3 -3.2" visible="false">
+  <!-- VR flash text -->
+  <a-entity id="vrfl" position="0 2.3 -3" visible="false">
     <a-plane width="2.3" height="0.5" material="shader:flat;color:#04040e;opacity:0.96"></a-plane>
-    <a-plane position="0 0.25 0.001" width="2.3" height="0.008"
-             material="shader:flat;color:#5b4fe8;opacity:0.45" id="vfbar"></a-plane>
     <a-text id="vftxt" value="" position="0 0 0.016"
             color="#4de8b0" width="3.8" align="center" font="roboto"></a-text>
   </a-entity>
@@ -489,23 +517,25 @@ h1 span{background:linear-gradient(135deg,var(--purple-l),var(--teal-l));-webkit
 </a-scene>
 
 <script>
-let cond='A', ts=null, ti=null, isDone=false, trial=0;
-const MAX=3, TGT='Inventory', res={A:[],B:[]};
+let cond='A', ts=null, ti=null, done=false, trial=0;
+const MAX=3, TGT='Inventory', res={A:[],B:[]}, errs={A:0,B:0};
+let pid='P01', orderAB=true, condOrder='AB';
+let startTime=null;
 
-/* ── Timer ── */
+// ── Order selector ──
+function selOrder(o){
+  orderAB=(o==='AB');
+  condOrder=o;
+  document.getElementById('ord-ab').className='ord-btn'+(orderAB?' sel':'');
+  document.getElementById('ord-ba').className='ord-btn'+(!orderAB?' sel':'');
+}
+
 function tick(){
-  if(!isDone)
-    document.getElementById('tclock').textContent=
-      ((performance.now()-ts)/1000).toFixed(1);
+  if(!done) document.getElementById('tclock').textContent=
+    ((performance.now()-ts)/1000).toFixed(1);
 }
-function startTimer(){
-  clearInterval(ti);
-  ts=performance.now();
-  isDone=false;
-  ti=setInterval(tick,80);
-}
+function startTimer(){clearInterval(ti);ts=performance.now();done=false;ti=setInterval(tick,80)}
 
-/* ── Progress ── */
 function updateProg(){
   const n=res.A.length+res.B.length;
   document.getElementById('pf').style.width=(n/(MAX*2)*100)+'%';
@@ -515,14 +545,13 @@ function updateProg(){
   }
 }
 
-/* ── Flash ── */
 function showFlash(msg,sub,type){
   const f=document.getElementById('flash');
   document.getElementById('fmsg').textContent=msg;
   document.getElementById('fsub').textContent=sub||'';
   f.className='show '+type;
   clearTimeout(f._t);
-  f._t=setTimeout(()=>f.className='',2400);
+  f._t=setTimeout(()=>f.className='',2200);
 }
 function vrFlash(msg,col){
   const p=document.getElementById('vrfl');
@@ -530,10 +559,9 @@ function vrFlash(msg,col){
   document.getElementById('vftxt').setAttribute('color',col||'#4de8b0');
   p.setAttribute('visible',true);
   clearTimeout(p._t);
-  p._t=setTimeout(()=>p.setAttribute('visible',false),2400);
+  p._t=setTimeout(()=>p.setAttribute('visible',false),2200);
 }
 
-/* ── Log ── */
 function addLog(msg,time,type){
   const d=document.createElement('div');
   d.className='lr '+type;
@@ -541,29 +569,130 @@ function addLog(msg,time,type){
   document.getElementById('entries').prepend(d);
 }
 
-/* ── End ── */
+// ── Save to localStorage ──
+function saveToStorage(){
+  const avgA=res.A.length?(res.A.reduce((a,b)=>a+b,0)/res.A.length).toFixed(2):'';
+  const avgB=res.B.length?(res.B.reduce((a,b)=>a+b,0)/res.B.length).toFixed(2):'';
+  const record={
+    pid,
+    order:condOrder,
+    date:new Date().toLocaleDateString('mn-MN'),
+    time:new Date().toLocaleTimeString('mn-MN',{hour:'2-digit',minute:'2-digit'}),
+    a1:res.A[0]||'',a2:res.A[1]||'',a3:res.A[2]||'',
+    avgA, errA:errs.A,
+    b1:res.B[0]||'',b2:res.B[1]||'',b3:res.B[2]||'',
+    avgB, errB:errs.B
+  };
+  const all=JSON.parse(localStorage.getItem('vr_study')||'[]');
+  // Replace if same pid exists, else append
+  const idx=all.findIndex(r=>r.pid===pid);
+  if(idx>=0) all[idx]=record; else all.push(record);
+  localStorage.setItem('vr_study',JSON.stringify(all));
+  return record;
+}
+
+// ── CSV for single participant ──
+function downloadCSV(){
+  const r=saveToStorage();
+  const header='Оролцогч,Дараалал,Огноо,Цаг,A1(s),A2(s),A3(s),A_avg(s),A_алдаа,B1(s),B2(s),B3(s),B_avg(s),B_алдаа\n';
+  const row=`${r.pid},${r.order},${r.date},${r.time},${r.a1},${r.a2},${r.a3},${r.avgA},${r.errA},${r.b1},${r.b2},${r.b3},${r.avgB},${r.errB}\n`;
+  dl('vr_study_'+r.pid+'.csv', header+row);
+}
+
+// ── CSV for all participants ──
+function downloadAllCSV(){
+  const all=JSON.parse(localStorage.getItem('vr_study')||'[]');
+  if(!all.length){alert('Өгөгдөл байхгүй');return}
+  const header='Оролцогч,Дараалал,Огноо,Цаг,A1(s),A2(s),A3(s),A_avg(s),A_алдаа,B1(s),B2(s),B3(s),B_avg(s),B_алдаа\n';
+  const rows=all.map(r=>`${r.pid},${r.order},${r.date},${r.time},${r.a1},${r.a2},${r.a3},${r.avgA},${r.errA},${r.b1},${r.b2},${r.b3},${r.avgB},${r.errB}`).join('\n');
+  dl('vr_study_all.csv', header+rows+'\n');
+}
+
+function dl(filename,content){
+  const a=document.createElement('a');
+  a.href='data:text/csv;charset=utf-8,\uFEFF'+encodeURIComponent(content);
+  a.download=filename;
+  a.click();
+}
+
+// ── Show all data modal ──
+function showAllData(){
+  const all=JSON.parse(localStorage.getItem('vr_study')||'[]');
+  document.getElementById('ad-count').textContent='Нийт '+all.length+' оролцогч бүртгэгдсэн';
+  const body=document.getElementById('ad-body');
+  if(!all.length){
+    body.innerHTML='<div class="no-data">Өгөгдөл байхгүй байна</div>';
+  } else {
+    body.innerHTML=`
+      <table class="ad-table">
+        <thead><tr>
+          <th>№</th><th>Дараалал</th><th>Огноо</th>
+          <th>A avg(s)</th><th>A алдаа</th>
+          <th>B avg(s)</th><th>B алдаа</th>
+          <th>Ялгаа</th>
+        </tr></thead>
+        <tbody>${all.map(r=>{
+          const diff=r.avgA&&r.avgB?(+r.avgB - +r.avgA).toFixed(2):'—';
+          const diffCol=diff!=='—'&&+diff>0?'color:#4de8b0':diff!=='—'?'color:#f08080':'';
+          return `<tr>
+            <td>${r.pid}</td>
+            <td>${r.order}</td>
+            <td>${r.date} ${r.time}</td>
+            <td style="color:#8a7bff">${r.avgA}s</td>
+            <td>${r.errA}</td>
+            <td style="color:#4de8b0">${r.avgB}s</td>
+            <td>${r.errB}</td>
+            <td style="${diffCol}">${diff!=='—'?(+diff>0?'+':'')+diff+'s':diff}</td>
+          </tr>`;
+        }).join('')}</tbody>
+      </table>`;
+  }
+  document.getElementById('alldata').style.display='flex';
+}
+
+function clearAll(){
+  if(confirm('Бүх өгөгдлийг устгах уу?')){
+    localStorage.removeItem('vr_study');
+    showAllData();
+  }
+}
+
+// ── End screen ──
 function showEnd(){
   clearInterval(ti);
+  saveToStorage();
   document.getElementById('hud').style.display='none';
   document.getElementById('menu-a').style.display='none';
   document.getElementById('stats-a').style.display='none';
+  document.getElementById('ep-pid').textContent=`Оролцогч ${pid} · Дараалал ${condOrder}`;
   const avgA=res.A.length?(res.A.reduce((a,b)=>a+b,0)/res.A.length).toFixed(2):'—';
   const avgB=res.B.length?(res.B.reduce((a,b)=>a+b,0)/res.B.length).toFixed(2):'—';
   const winA=res.A.length&&res.B.length&&+avgA<+avgB;
   const winB=res.A.length&&res.B.length&&+avgB<+avgA;
   document.getElementById('rg').innerHTML=`
-    <div class="rc a ${winA?'win':''}"><div class="rl">Нөхцөл А — HUD</div><div class="rv">${avgA}s</div><div class="rs">Дундаж task time</div></div>
-    <div class="rc b ${winB?'win':''}"><div class="rl">Нөхцөл В — Diegetic</div><div class="rv">${avgB}s</div><div class="rs">Дундаж task time</div></div>
-    <div class="rc a"><div class="rl">А оролдлогууд</div><div class="rv" style="font-size:15px">${res.A.map(v=>v+'s').join(' · ')||'—'}</div></div>
-    <div class="rc b"><div class="rl">В оролдлогууд</div><div class="rv" style="font-size:15px">${res.B.map(v=>v+'s').join(' · ')||'—'}</div></div>
+    <div class="rc a ${winA?'win':''}">
+      <div class="rl">Нөхцөл А — HUD</div>
+      <div class="rv">${avgA}s</div>
+      <div class="rs">avg · ${errs.A} алдаа</div>
+    </div>
+    <div class="rc b ${winB?'win':''}">
+      <div class="rl">Нөхцөл В — Diegetic</div>
+      <div class="rv">${avgB}s</div>
+      <div class="rs">avg · ${errs.B} алдаа</div>
+    </div>
+    <div class="rc a"><div class="rl">А оролдлогууд</div>
+      <div class="rv" style="font-size:15px">${res.A.map(v=>v+'s').join(' · ')||'—'}</div></div>
+    <div class="rc b"><div class="rl">В оролдлогууд</div>
+      <div class="rv" style="font-size:15px">${res.B.map(v=>v+'s').join(' · ')||'—'}</div></div>
   `;
   document.getElementById('end').style.display='flex';
 }
 
-/* ── Core hit logic (shared) ── */
+// ── Hit logic ──
 function processHit(label){
+  if(done) return;
   clearInterval(ti);
-  isDone=true;
+  done=true;
   const s=((performance.now()-ts)/1000).toFixed(2);
   if(label===TGT){
     trial++;
@@ -571,6 +700,10 @@ function processHit(label){
     const avg=(res[cond].reduce((a,b)=>a+b,0)/res[cond].length).toFixed(2);
     addLog(`✓  avg ${avg}s`,s,'ok');
     updateProg();
+    if(cond==='B'){
+      const g=document.getElementById('guide-arrow');
+      if(g) g.setAttribute('visible',false);
+    }
     if(trial>=MAX){
       if(res.A.length===MAX&&res.B.length===MAX){
         setTimeout(showEnd,1400);
@@ -586,40 +719,24 @@ function processHit(label){
       setTimeout(startTimer,700);
     }
   } else {
+    errs[cond]++;
     addLog(`"${label}" — буруу`,s,'err');
-    showFlash(`✗  "${label}"`,'Зөв товчийг хайна уу','err');
-    vrFlash(`✗  "${label}" — буруу`,'#f08080');
+    showFlash(`✗  "${label}"`,'Inventory-г хайна уу','err');
+    vrFlash(`✗  буруу: ${label}`,'#f08080');
     setTimeout(startTimer,500);
   }
 }
 
-/* ── Condition A: HTML button click ── */
-function hitHTML(label){
-  if(cond!=='A') return;
-  processHit(label);
-}
+function hitA(label){ if(cond!=='A') return; processHit(label); }
 
-/* ── Condition B: 3D button click ── */
-AFRAME.registerComponent('btn3d-click',{
+AFRAME.registerComponent('diegetic-btn',{
   init(){
     const el=this.el;
     const label=el.getAttribute('data-label');
-    el.addEventListener('click',()=>{
-      if(cond!=='B') return;
-      processHit(label);
-    });
-    el.addEventListener('triggerdown',()=>{
-      if(cond!=='B') return;
-      processHit(label);
-    });
-    el.addEventListener('mouseenter',()=>{
-      const bg=el.querySelector('.bbg');
-      if(bg) bg.setAttribute('material','opacity',0.55);
-    });
-    el.addEventListener('mouseleave',()=>{
-      const bg=el.querySelector('.bbg');
-      if(bg) bg.setAttribute('material','opacity',1);
-    });
+    el.addEventListener('click',()=>{ if(cond!=='B') return; processHit(label); });
+    el.addEventListener('triggerdown',()=>{ if(cond!=='B') return; processHit(label); });
+    el.addEventListener('mouseenter',()=>el.setAttribute('material','opacity',0.55));
+    el.addEventListener('mouseleave',()=>el.setAttribute('material','opacity',1));
   }
 });
 
@@ -633,27 +750,26 @@ AFRAME.registerComponent('ctrl-ray',{
 });
 
 document.querySelector('a-scene').addEventListener('loaded',()=>{
-  document.querySelectorAll('.btn3d').forEach(el=>el.setAttribute('btn3d-click',''));
+  document.querySelectorAll('.btn3d').forEach(el=>el.setAttribute('diegetic-btn',''));
   const rh=document.getElementById('rhand');
   if(rh) rh.setAttribute('ctrl-ray','');
 });
 
-/* ── Set condition ── */
 function setCond(c){
-  cond=c; trial=0; isDone=false; clearInterval(ti);
+  cond=c; trial=0; done=false; clearInterval(ti);
   document.getElementById('tclock').textContent='0.0';
-  // 3D diegetic
   document.getElementById('diegetic-b').setAttribute('visible',c==='B');
-  // 2D HUD elements
+  if(c==='B'){
+    const g=document.getElementById('guide-arrow');
+    if(g) g.setAttribute('visible',true);
+  }
   document.getElementById('menu-a').style.display=c==='A'?'block':'none';
   document.getElementById('stats-a').style.display=c==='A'?'block':'none';
-  // cursor visibility
-  const cur=document.getElementById('cursor3d');
+  const cur=document.getElementById('cur3d');
   if(cur) cur.setAttribute('visible',c==='B');
-  // labels
   const cfg={
-    A:{name:'А — Non-diegetic HUD',task:'"Inventory" товчийг баруун талаас олоод дарна уу'},
-    B:{name:'В — Diegetic объект',task:'"Inventory" товчийг зүүн ширээн дээрээс олоод дарна уу'}
+    A:{name:'А — Non-diegetic HUD',task:'"Inventory" товчийг баруун талын цэснээс олоод дарна уу'},
+    B:{name:'В — Diegetic терминал',task:'Зүүн тийш эргэж терминалаас "Inventory" товчийг олоод дарна уу'}
   };
   document.getElementById('cpname').textContent=cfg[c].name;
   document.getElementById('cptask').textContent=cfg[c].task;
@@ -666,15 +782,20 @@ function setCond(c){
 }
 
 function startStudy(){
+  pid=document.getElementById('pid').value.trim()||'P01';
   document.getElementById('intro').style.display='none';
   document.getElementById('hud').style.display='block';
-  setCond('A');
+  startTime=Date.now();
+  errs.A=0; errs.B=0;
+  res.A=[]; res.B=[];
+  // Start with correct condition based on order
+  setCond(orderAB?'A':'B');
 }
 
 document.addEventListener('keydown',e=>{
   if(e.key==='1') setCond('A');
   if(e.key==='2') setCond('B');
-  if(e.key==='r'||e.key==='R'){trial=0;isDone=false;startTimer();}
+  if(e.key==='r'||e.key==='R'){trial=0;done=false;startTimer()}
 });
 </script>
 </body>
