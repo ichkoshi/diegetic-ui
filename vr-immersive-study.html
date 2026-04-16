@@ -373,8 +373,8 @@ h1 span{background:linear-gradient(135deg,var(--pul),var(--tel));-webkit-backgro
      A-FRAME SCENE
 ════════════════════════════════════ -->
 <!-- Hidden canvases for terminal texture -->
-<canvas id="term-canvas" width="512" height="640" style="display:none"></canvas>
-<canvas id="guide-canvas" width="512" height="128" style="display:none"></canvas>
+<canvas id="term-canvas" width="640" height="896" style="display:none"></canvas>
+<canvas id="guide-canvas" width="640" height="128" style="display:none"></canvas>
 
 <a-scene vr-mode-ui="enabled:true" renderer="antialias:true;logarithmicDepthBuffer:true">
   <a-sky color="#04040e"></a-sky>
@@ -444,65 +444,68 @@ h1 span{background:linear-gradient(135deg,var(--pul),var(--tel));-webkit-backgro
   <a-entity oculus-touch-controls="hand:left"></a-entity>
 
   <!-- ══════════════════════════════════
-       CONDITION B: DIEGETIC TERMINAL — Canvas texture
-       Текстийг HTML Canvas-аар зурна → CDN хэрэггүй, 100% харагдана
-       Терминал дээшлүүлсэн: y=1.95 (нүдний өндөрт)
+       CONDITION B: DIEGETIC TERMINAL
+       Ойрхон (-1.8, _, -2.4), том дэлгэц, нүдний өндөрт
+       Хэрэглэгч зүүн тийш бага эргэхэд л харагдана
   ══════════════════════════════════ -->
   <a-entity id="diegetic-b" visible="false">
 
     <!-- Pillar -->
-    <a-cylinder position="-3.2 0.9 -3.5" radius="0.1" height="1.8"
+    <a-cylinder position="-1.8 0.9 -2.4" radius="0.12" height="1.8"
                 material="color:#08080e;metalness:0.9;roughness:0.1"></a-cylinder>
-    <a-cylinder position="-3.2 0.02 -3.5" radius="0.28" height="0.04"
+    <a-cylinder position="-1.8 0.02 -2.4" radius="0.32" height="0.04"
                 material="color:#0c0c1c;metalness:0.8"></a-cylinder>
 
-    <!-- Housing -->
-    <a-box position="-3.2 1.95 -3.5" width="0.92" height="1.2" depth="0.13"
+    <!-- Housing — том болгосон -->
+    <a-box position="-1.8 1.95 -2.4" width="1.28" height="1.52" depth="0.13"
            material="color:#07070f;metalness:0.88;roughness:0.08"></a-box>
-    <a-box position="-3.2 1.95 -3.44" width="0.94" height="1.22" depth="0.005"
-           material="shader:flat;color:#1cc994;opacity:0.25"></a-box>
+    <a-box position="-1.8 1.95 -2.34" width="1.30" height="1.54" depth="0.005"
+           material="shader:flat;color:#1cc994;opacity:0.28"></a-box>
 
-    <!-- Canvas texture screen — нэг том plane дээр бүх текст -->
-    <a-plane id="term-screen" position="-3.2 1.95 -3.43"
-             width="0.80" height="1.06"
+    <!-- Canvas texture screen -->
+    <a-plane id="term-screen" position="-1.8 1.95 -2.33"
+             width="1.18" height="1.40"
              material="shader:flat;src:#term-canvas;color:#ffffff"></a-plane>
 
-    <!-- Invisible clickable planes ON TOP of screen (raycaster target) -->
-    <!-- y positions: screen center 1.95, height 1.06 → top ~2.48, buttons inside -->
+    <!-- Invisible clickable hit areas — 5 товч
+         Screen: center y=1.95, height=1.40 → top=2.65, bottom=1.25
+         Header: 2.65–2.52  (0.13m)
+         5 buttons each 0.235m with 0.018m gap
+    -->
     <a-plane class="btn3d" data-label="Character"
-             position="-3.2 2.27 -3.41" width="0.76" height="0.175"
+             position="-1.8 2.39 -2.31" width="1.12" height="0.22"
              material="shader:flat;color:#000000;opacity:0.001"></a-plane>
 
     <a-plane class="btn3d" data-label="Inventory"
-             position="-3.2 2.08 -3.41" width="0.76" height="0.175"
+             position="-1.8 2.14 -2.31" width="1.12" height="0.22"
              material="shader:flat;color:#000000;opacity:0.001"></a-plane>
 
     <a-plane class="btn3d" data-label="Map"
-             position="-3.2 1.89 -3.41" width="0.76" height="0.175"
+             position="-1.8 1.90 -2.31" width="1.12" height="0.22"
              material="shader:flat;color:#000000;opacity:0.001"></a-plane>
 
     <a-plane class="btn3d" data-label="Settings"
-             position="-3.2 1.70 -3.41" width="0.76" height="0.175"
+             position="-1.8 1.65 -2.31" width="1.12" height="0.22"
              material="shader:flat;color:#000000;opacity:0.001"></a-plane>
 
     <a-plane class="btn3d" data-label="Quest Log"
-             position="-3.2 1.51 -3.41" width="0.76" height="0.175"
+             position="-1.8 1.41 -2.31" width="1.12" height="0.22"
              material="shader:flat;color:#000000;opacity:0.001"></a-plane>
 
     <!-- Glow -->
-    <a-light type="point" position="-3.2 1.95 -3.1" color="#1cc994" intensity="0.7" distance="5"></a-light>
-    <a-sphere position="-3.2 1.95 -3.25" radius="0.65"
+    <a-light type="point" position="-1.8 1.95 -2.0" color="#1cc994" intensity="0.8" distance="5"></a-light>
+    <a-sphere position="-1.8 1.95 -2.1" radius="0.8"
               material="shader:flat;color:#1cc994;opacity:0.04"></a-sphere>
 
     <!-- Guide arrow -->
     <a-entity id="guide-arrow">
-      <a-plane position="-3.2 2.85 -3.5" width="1.3" height="0.26"
+      <a-plane position="-1.8 2.92 -2.4" width="1.5" height="0.28"
                material="shader:flat;color:#030e08;opacity:0.92"></a-plane>
-      <a-plane id="term-guide-canvas-plane" position="-3.2 2.85 -3.48" width="1.3" height="0.26"
+      <a-plane id="term-guide-canvas-plane" position="-1.8 2.92 -2.38" width="1.5" height="0.28"
                material="shader:flat;src:#guide-canvas;color:#ffffff"></a-plane>
-      <a-cone position="-3.2 2.52 -3.5" rotation="180 0 0"
-              radius-bottom="0.09" radius-top="0" height="0.28"
-              material="shader:flat;color:#1cc994;opacity:0.5"></a-cone>
+      <a-cone position="-1.8 2.57 -2.4" rotation="180 0 0"
+              radius-bottom="0.1" radius-top="0" height="0.30"
+              material="shader:flat;color:#1cc994;opacity:0.55"></a-cone>
     </a-entity>
 
   </a-entity>
@@ -523,56 +526,69 @@ function drawTerminalCanvas(highlightLabel){
   const c=document.getElementById('term-canvas');
   if(!c) return;
   const ctx=c.getContext('2d');
-  const W=512,H=640;
+  const W=640, H=896;
+
   // BG
-  ctx.fillStyle='#02020a';
+  ctx.fillStyle='#03030e';
   ctx.fillRect(0,0,W,H);
+
   // Header bg
-  ctx.fillStyle='#051510';
-  ctx.fillRect(0,0,W,80);
+  ctx.fillStyle='#051a12';
+  ctx.fillRect(0,0,W,96);
+
   // Header text
   ctx.fillStyle='#1cc994';
-  ctx.font='bold 26px monospace';
+  ctx.font='bold 34px monospace';
   ctx.textAlign='center';
-  ctx.fillText('DEVICE MENU',W/2,54);
+  ctx.fillText('DEVICE MENU', W/2, 64);
+
   // Divider
   ctx.strokeStyle='#1cc994';
   ctx.globalAlpha=0.5;
   ctx.lineWidth=2;
-  ctx.beginPath();ctx.moveTo(16,82);ctx.lineTo(W-16,82);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(20,98);ctx.lineTo(W-20,98);ctx.stroke();
   ctx.globalAlpha=1;
 
   const btns=[
-    {label:'Character', bg:'#0e1828', stripe:'#2255aa', tc:'#aaddff'},
+    {label:'Character', bg:'#0e1830', stripe:'#2255aa', tc:'#aaddff'},
     {label:'Inventory',  bg:'#0e1a3a', stripe:'#5b4fe8', tc:'#c8b8ff'},
     {label:'Map',        bg:'#0a1828', stripe:'#1a5080', tc:'#88ccee'},
     {label:'Settings',   bg:'#0a1a0c', stripe:'#1a6028', tc:'#88ee88'},
     {label:'Quest Log',  bg:'#1c1408', stripe:'#886618', tc:'#ddcc66'},
   ];
-  btns.forEach((b,i)=>{
-    const y=86+i*111;
-    const h=108;
-    // Button bg
-    ctx.fillStyle=b===btns.find(x=>x.label===highlightLabel)?'#ffffff22':b.bg;
-    ctx.fillRect(0,y,W,h);
-    // Stripe
-    ctx.fillStyle=b.stripe;
-    ctx.fillRect(0,y,10,h);
+
+  // Each button: (H - 100) / 5 = 796/5 = ~159px each
+  const btnH = Math.floor((H - 100) / 5);
+
+  btns.forEach((b, i) => {
+    const y = 100 + i * btnH;
+    const h = btnH - 2; // 2px gap
+
+    // Highlight if active
+    ctx.fillStyle = (b.label === highlightLabel) ? '#ffffff18' : b.bg;
+    ctx.fillRect(0, y, W, h);
+
+    // Left stripe
+    ctx.fillStyle = b.stripe;
+    ctx.fillRect(0, y, 12, h);
+
     // Divider line
-    ctx.strokeStyle='#ffffff';
-    ctx.globalAlpha=0.05;
+    ctx.strokeStyle='rgba(255,255,255,0.06)';
     ctx.lineWidth=1;
     ctx.beginPath();ctx.moveTo(0,y+h);ctx.lineTo(W,y+h);ctx.stroke();
-    ctx.globalAlpha=1;
-    // Label
-    ctx.fillStyle=b.tc;
-    ctx.font='bold 30px monospace';
-    ctx.textAlign='center';
-    ctx.fillText(b.label,W/2,y+64);
+
+    // Label — big and clear
+    ctx.fillStyle = b.tc;
+    ctx.font = 'bold 38px monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText(b.label, W/2, y + h/2 + 14);
   });
+
   // Refresh texture
   const el=document.getElementById('term-screen');
-  if(el) el.getObject3D('mesh') && el.getObject3D('mesh').material.map && (el.getObject3D('mesh').material.map.needsUpdate=true);
+  if(el && el.getObject3D('mesh') && el.getObject3D('mesh').material.map){
+    el.getObject3D('mesh').material.map.needsUpdate=true;
+  }
 }
 
 function drawGuideCanvas(){
