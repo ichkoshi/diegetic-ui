@@ -376,6 +376,10 @@ h1 span{background:linear-gradient(135deg,var(--pul),var(--tel));-webkit-backgro
 <canvas id="term-canvas" width="640" height="896" style="display:none"></canvas>
 <canvas id="guide-canvas" width="640" height="128" style="display:none"></canvas>
 
+<!-- VR HUD canvas elements -->
+<canvas id="vr-hud-canvas" width="256" height="512" style="display:none"></canvas>
+<canvas id="vr-sub-canvas" width="512" height="384" style="display:none"></canvas>
+
 <a-scene vr-mode-ui="enabled:true" renderer="antialias:true;logarithmicDepthBuffer:true">
   <a-sky color="#04040e"></a-sky>
 
@@ -427,19 +431,76 @@ h1 span{background:linear-gradient(135deg,var(--pul),var(--tel));-webkit-backgro
 
   <!-- Camera -->
   <a-entity id="rig" position="0 1.65 2.2">
-    <a-camera id="cam" look-controls wasd-controls="acceleration:22">
-      <!-- Cursor — always visible, targets btn3d -->
+    <a-camera id="cam" look-controls="pointerLockEnabled:false" wasd-controls="acceleration:22">
+      <!-- Cursor — mouse position based, no pointer lock needed -->
       <a-cursor id="cur3d"
-        raycaster="objects:.btn3d;near:0.05;far:30"
+        raycaster="objects:.btn3d,.hud-btn3d;near:0.05;far:30;useWorldCoordinates:false"
+        cursor="rayOrigin:mouse"
         fuse="false"
         geometry="primitive:ring;radiusInner:0.014;radiusOuter:0.022"
         material="shader:flat;color:#ffffff;opacity:0.8">
       </a-cursor>
+
+      <!-- ══ VR горимд харагдах 3D HUD (canvas texture) ══ -->
+      <!-- Desktop-д hidden, VR enter-д visible болно -->
+      <a-entity id="vr-hud" visible="false">
+
+        <!-- Task prompt — дээд хэсэгт -->
+        <a-plane id="vr-task-bg"
+                 position="0 0.28 -0.7" width="0.65" height="0.1"
+                 material="shader:flat;color:#07071a;opacity:0.92"></a-plane>
+        <a-entity id="vr-task-text" position="0 0.28 -0.69"
+                  text="value:Даалгавар...;color:#4de8b0;width:1.1;align:center;wrapCount:40;font:mozillavr"></a-entity>
+
+        <!-- Menu HUD — баруун талд -->
+        <a-plane id="vr-hud-canvas-plane"
+                 position="0.38 -0.02 -0.65" width="0.26" height="0.44"
+                 material="shader:flat;src:#vr-hud-canvas;color:#ffffff"></a-plane>
+
+        <!-- Sub-panel — дунд -->
+        <a-plane id="vr-sub-canvas-plane"
+                 position="0 -0.05 -0.65" width="0.52" height="0.38"
+                 material="shader:flat;src:#vr-sub-canvas;color:#ffffff"
+                 visible="false"></a-plane>
+
+      </a-entity>
+
+      <!-- ══ CONDITION A: Camera-child 3D hit planes for controller ══ -->
+      <a-plane class="hud-btn3d" data-label="Character"
+               position="0.38 0.10 -0.65" width="0.24" height="0.072"
+               material="shader:flat;color:#ffffff;opacity:0.001"></a-plane>
+      <a-plane class="hud-btn3d" data-label="Inventory"
+               position="0.38 0.025 -0.65" width="0.24" height="0.072"
+               material="shader:flat;color:#ffffff;opacity:0.001"></a-plane>
+      <a-plane class="hud-btn3d" data-label="Map"
+               position="0.38 -0.05 -0.65" width="0.24" height="0.072"
+               material="shader:flat;color:#ffffff;opacity:0.001"></a-plane>
+      <a-plane class="hud-btn3d" data-label="Settings"
+               position="0.38 -0.125 -0.65" width="0.24" height="0.072"
+               material="shader:flat;color:#ffffff;opacity:0.001"></a-plane>
+      <a-plane class="hud-btn3d" data-label="Quest Log"
+               position="0.38 -0.20 -0.65" width="0.24" height="0.072"
+               material="shader:flat;color:#ffffff;opacity:0.001"></a-plane>
+
+      <!-- Phase 2 sub-items -->
+      <a-plane class="hud-sub3d" data-idx="0"
+               position="0 0.075 -0.65" width="0.48" height="0.072"
+               material="shader:flat;color:#ffffff;opacity:0.001"></a-plane>
+      <a-plane class="hud-sub3d" data-idx="1"
+               position="0 0.00 -0.65" width="0.48" height="0.072"
+               material="shader:flat;color:#ffffff;opacity:0.001"></a-plane>
+      <a-plane class="hud-sub3d" data-idx="2"
+               position="0 -0.075 -0.65" width="0.48" height="0.072"
+               material="shader:flat;color:#ffffff;opacity:0.001"></a-plane>
+      <a-plane class="hud-sub3d" data-idx="3"
+               position="0 -0.15 -0.65" width="0.48" height="0.072"
+               material="shader:flat;color:#ffffff;opacity:0.001"></a-plane>
     </a-camera>
   </a-entity>
 
   <a-entity id="rhand" oculus-touch-controls="hand:right"
-    raycaster="objects:.btn3d;far:25;lineColor:#4de8b0;lineOpacity:0.5">
+    raycaster="objects:.btn3d,.hud-btn3d,.hud-sub3d;far:25;lineColor:#4de8b0;lineOpacity:0.5"
+    ctrl-ray>
   </a-entity>
   <a-entity oculus-touch-controls="hand:left"></a-entity>
 
@@ -661,6 +722,45 @@ const TASK_DEFS = {
   }
 };
 
+let isVRMode=false;
+
+function isVR(){ return isVRMode; }
+
+// VR-д UI шинэчлэх
+function vrSyncTask(){
+  if(!isVR()||cond!=='A') return;
+  const tgt=currentTarget();
+  updateVrTask('"'+tgt+'" товчийг олоод дарна уу');
+  drawVrHud(null);
+  // sub-panel нуу
+  const sp=document.getElementById('vr-sub-canvas-plane');
+  if(sp) sp.setAttribute('visible',false);
+  const hp=document.getElementById('vr-hud-canvas-plane');
+  if(hp) hp.setAttribute('visible',true);
+}
+
+function vrSyncSub(menuLabel){
+  if(!isVR()||cond!=='A') return;
+  const def=TASK_DEFS[menuLabel];
+  if(!def) return;
+  // HUD нуу, sub харуул
+  const hp=document.getElementById('vr-hud-canvas-plane');
+  if(hp) hp.setAttribute('visible',false);
+  const sp=document.getElementById('vr-sub-canvas-plane');
+  if(sp) sp.setAttribute('visible',true);
+  // Sub canvas зур
+  const shuffled=shuffle(def.items);
+  const labels=shuffled.map(i=>i.label);
+  const tgtLabel=def.items.find(i=>i.tgt).label;
+  drawVrSub(menuLabel+' — '+def.p2prompt, labels, tgtLabel);
+  updateVrTask(def.p2prompt);
+  // hud-sub3d plane-уудыг label-тай болго
+  document.querySelectorAll('.hud-sub3d').forEach((pl,i)=>{
+    pl.dataset.subLabel = labels[i]||'';
+    pl.dataset.subTgt = shuffled[i]&&shuffled[i].tgt?'1':'0';
+  });
+}
+
 // ── State ─────────────────────────────────────────
 let cond='A', ts=null, ti=null, isDone=false, trial=0, phase=1;
 const MAX=3, res={A:[],B:[]}, errs={A:0,B:0};
@@ -704,6 +804,7 @@ function updateTaskUI(){
   document.getElementById('cptask').textContent=`"${tgt}" товчийг олоод дарна уу ${hint}`;
   document.getElementById('pbadge').textContent='Үе шат 1 — Цэс нээх';
   document.getElementById('pbadge').className='phase-badge p1';
+  vrSyncTask();
 }
 
 function showFlash(msg,sub,type){
@@ -749,7 +850,8 @@ function openSubPanel(menuLabel){
     btn.onclick=()=>hitSubItem(item.tgt,item.label);
     el.appendChild(btn);
   });
-  document.getElementById('subpanel').style.display='block';
+  document.getElementById('subpanel').style.display= isVR()?'none':'block';
+  vrSyncSub(menuLabel);
 }
 
 // ── Phase 1 hit (menu button) ─────────────────────
@@ -895,7 +997,130 @@ function showEnd(){
 }
 
 // ── A-Frame ───────────────────────────────────────
-AFRAME.registerComponent('diegetic-btn',{
+// ── VR HUD Canvas ────────────────────────────────────────────────
+function drawVrHud(highlightLabel){
+  const c=document.getElementById('vr-hud-canvas');
+  if(!c) return;
+  const ctx=c.getContext('2d');
+  const W=256,H=512;
+  ctx.fillStyle='#07071a'; ctx.fillRect(0,0,W,H);
+  // Header
+  ctx.fillStyle='#1a1a3a'; ctx.fillRect(0,0,W,60);
+  ctx.fillStyle='#4de8b0'; ctx.font='bold 18px monospace';
+  ctx.textAlign='center'; ctx.fillText('MENU',W/2,40);
+  // Divider
+  ctx.strokeStyle='#5b4fe8'; ctx.lineWidth=1.5;
+  ctx.beginPath(); ctx.moveTo(10,62); ctx.lineTo(W-10,62); ctx.stroke();
+
+  const btns=[
+    {label:'Character',tc:'#aaddff',bc:'#0e1830'},
+    {label:'Inventory', tc:'#c8b8ff',bc:'#0e1a3a'},
+    {label:'Map',       tc:'#88ccee',bc:'#0a1828'},
+    {label:'Settings',  tc:'#88ee88',bc:'#0a1a0c'},
+    {label:'Quest Log', tc:'#ddcc66',bc:'#1c1408'},
+  ];
+  const bH=Math.floor((H-66)/5);
+  btns.forEach((b,i)=>{
+    const y=66+i*bH;
+    ctx.fillStyle=(b.label===highlightLabel)?'#ffffff22':b.bc;
+    ctx.fillRect(0,y,W,bH-2);
+    ctx.fillStyle=b.tc;
+    ctx.font='bold 22px monospace';
+    ctx.textAlign='center';
+    ctx.fillText(b.label,W/2,y+bH/2+8);
+  });
+  const el=document.getElementById('vr-hud-canvas-plane');
+  if(el&&el.getObject3D('mesh')&&el.getObject3D('mesh').material.map)
+    el.getObject3D('mesh').material.map.needsUpdate=true;
+}
+
+function drawVrSub(title, items, targetLabel){
+  const c=document.getElementById('vr-sub-canvas');
+  if(!c) return;
+  const ctx=c.getContext('2d');
+  const W=512,H=384;
+  ctx.fillStyle='#07071a'; ctx.fillRect(0,0,W,H);
+  ctx.fillStyle='#1a1a3a'; ctx.fillRect(0,0,W,70);
+  ctx.fillStyle='#4de8b0'; ctx.font='bold 20px monospace';
+  ctx.textAlign='center'; ctx.fillText(title,W/2,28);
+  ctx.fillStyle='#a8a6c8'; ctx.font='14px monospace';
+  ctx.fillText('Зорилтыг олж дарна уу',W/2,52);
+  ctx.strokeStyle='#5b4fe8'; ctx.lineWidth=1;
+  ctx.beginPath(); ctx.moveTo(10,72); ctx.lineTo(W-10,72); ctx.stroke();
+
+  const iH=Math.floor((H-76)/4);
+  items.forEach((item,i)=>{
+    const y=76+i*iH;
+    const isTarget=item===targetLabel;
+    ctx.fillStyle=isTarget?'#1a2a1a':'#0d0d26';
+    ctx.fillRect(4,y+2,W-8,iH-4);
+    ctx.fillStyle=isTarget?'#4de8b0':'#a8a6c8';
+    ctx.font=(isTarget?'bold ':'')+'20px monospace';
+    ctx.textAlign='center';
+    ctx.fillText(item,W/2,y+iH/2+8);
+  });
+  const el=document.getElementById('vr-sub-canvas-plane');
+  if(el&&el.getObject3D('mesh')&&el.getObject3D('mesh').material.map)
+    el.getObject3D('mesh').material.map.needsUpdate=true;
+}
+
+function updateVrTask(txt){
+  const el=document.getElementById('vr-task-text');
+  if(el) el.setAttribute('text','value',txt||'');
+}
+
+// ── VR Enter / Exit ──────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded',()=>{
+  const scene=document.querySelector('a-scene');
+  if(!scene) return;
+  scene.addEventListener('enter-vr',()=>{
+    isVRMode=true;
+    // HTML overlay нуух
+    ['menu-a','stats-a','subpanel','task-bar'].forEach(id=>{
+      const el=document.getElementById(id);
+      if(el) el.style.display='none';
+    });
+    // 3D HUD харуулах (зөвхөн А нөхцөлд)
+    const vhud=document.getElementById('vr-hud');
+    if(vhud&&cond==='A') vhud.setAttribute('visible','true');
+    drawVrHud(null);
+    vrSyncTask();
+  });
+  scene.addEventListener('exit-vr',()=>{
+    isVRMode=false;
+    // 3D HUD нуух
+    const vhud=document.getElementById('vr-hud');
+    if(vhud) vhud.setAttribute('visible','false');
+    // HTML буцааж харуулах
+    updateCondUI();
+  });
+});
+AFRAME.registerComponent('ctrl-ray',{
+  init(){
+    this.el.addEventListener('triggerdown',()=>{
+      const r=this.el.components.raycaster;
+      if(!r) return;
+      const hits=r.intersectedEls;
+      if(!hits||!hits.length) return;
+      const hit=hits[0];
+
+      // Нөхцөл А — HUD товч
+      if(hit.classList.contains('hud-btn3d')){
+        const label=hit.dataset.label;
+        if(label) hitA(label);
+        return;
+      }
+      // Нөхцөл А — sub-item (VR)
+      if(hit.classList.contains('hud-sub3d')){
+        const subLabel=hit.dataset.subLabel;
+        const isTgt=hit.dataset.subTgt==='1';
+        if(subLabel) hitSubItem(isTgt, subLabel);
+        return;
+      }
+      // Нөхцөл В — diegetic товч (diegetic-btn component-д аль хэдийн байна)
+    });
+  }
+});
   init(){
     const el=this.el, label=el.getAttribute('data-label');
     // Store original color
