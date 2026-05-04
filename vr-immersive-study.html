@@ -434,11 +434,11 @@ h1 span{background:linear-gradient(135deg,var(--pul),var(--tel));-webkit-backgro
     <a-camera id="cam" look-controls="pointerLockEnabled:false" wasd-controls="acceleration:22">
       <!-- Cursor — mouse position based, no pointer lock needed -->
       <a-cursor id="cur3d"
-        raycaster="objects:.btn3d,.hud-btn3d;near:0.05;far:30;useWorldCoordinates:false"
+        raycaster="objects:.btn3d,.hud-btn3d,.hud-sub3d;near:0.05;far:30"
         cursor="rayOrigin:mouse"
         fuse="false"
         geometry="primitive:ring;radiusInner:0.014;radiusOuter:0.022"
-        material="shader:flat;color:#ffffff;opacity:0.8">
+        material="shader:flat;color:#ffffff;opacity:0.7">
       </a-cursor>
 
       <!-- ══ VR горимд харагдах 3D HUD (canvas texture) ══ -->
@@ -499,10 +499,12 @@ h1 span{background:linear-gradient(135deg,var(--pul),var(--tel));-webkit-backgro
   </a-entity>
 
   <a-entity id="rhand" oculus-touch-controls="hand:right"
-    raycaster="objects:.btn3d,.hud-btn3d,.hud-sub3d;far:25;lineColor:#4de8b0;lineOpacity:0.5"
+    raycaster="objects:.btn3d,.hud-btn3d,.hud-sub3d;far:25;lineColor:#4de8b0;lineOpacity:0.7;showLine:true"
     ctrl-ray>
   </a-entity>
-  <a-entity oculus-touch-controls="hand:left"></a-entity>
+  <a-entity oculus-touch-controls="hand:left"
+    thumbstick-move>
+  </a-entity>
 
   <!-- ══════════════════════════════════
        CONDITION B: DIEGETIC TERMINAL
@@ -1092,9 +1094,34 @@ document.addEventListener('DOMContentLoaded',()=>{
     const vhud=document.getElementById('vr-hud');
     if(vhud) vhud.setAttribute('visible','false');
     // HTML буцааж харуулах
-    updateCondUI();
+    setCond(cond);
   });
 });
+// ── A-Frame components ───────────────────────────────────────────
+
+// Diegetic button — В нөхцөлийн 3D товч
+AFRAME.registerComponent('diegetic-btn',{
+  init(){
+    const el=this.el;
+    const label=el.getAttribute('data-label')||el.dataset.label;
+    el.addEventListener('click',()=>{
+      if(cond!=='B'||phase!==1) return;
+      hitPhase1(label);
+    });
+    el.addEventListener('triggerdown',()=>{
+      if(cond!=='B'||phase!==1) return;
+      hitPhase1(label);
+    });
+    el.addEventListener('mouseenter',()=>{
+      el.setAttribute('material','opacity',0.6);
+    });
+    el.addEventListener('mouseleave',()=>{
+      el.setAttribute('material','opacity',0.001);
+    });
+  }
+});
+
+// Controller ray — right hand trigger
 AFRAME.registerComponent('ctrl-ray',{
   init(){
     this.el.addEventListener('triggerdown',()=>{
@@ -1103,56 +1130,59 @@ AFRAME.registerComponent('ctrl-ray',{
       const hits=r.intersectedEls;
       if(!hits||!hits.length) return;
       const hit=hits[0];
-
-      // Нөхцөл А — HUD товч
+      // Нөхцөл А — HUD menu товч
       if(hit.classList.contains('hud-btn3d')){
         const label=hit.dataset.label;
         if(label) hitA(label);
         return;
       }
-      // Нөхцөл А — sub-item (VR)
+      // Нөхцөл А — sub-item
       if(hit.classList.contains('hud-sub3d')){
         const subLabel=hit.dataset.subLabel;
         const isTgt=hit.dataset.subTgt==='1';
         if(subLabel) hitSubItem(isTgt, subLabel);
         return;
       }
-      // Нөхцөл В — diegetic товч (diegetic-btn component-д аль хэдийн байна)
+      // Нөхцөл В — diegetic-btn click emit
+      hit.emit('click');
     });
   }
 });
+
+// Thumbstick locomotion — VR горимд хөдлөх
+AFRAME.registerComponent('thumbstick-move',{
   init(){
-    const el=this.el, label=el.getAttribute('data-label');
-    // Store original color
-    const origColor=el.getAttribute('material').color||'#0c1630';
-    el.addEventListener('click',()=>{if(cond!=='B'||phase!==1)return;hitPhase1(label);});
-    el.addEventListener('triggerdown',()=>{if(cond!=='B'||phase!==1)return;hitPhase1(label);});
-    el.addEventListener('mouseenter',()=>{
-      el.setAttribute('material','opacity',0.75);
-      // brighten text on hover
-      const txt=el.getAttribute('text');
-      if(txt) el.setAttribute('text','color','#ffffff');
+    this.speed=2.2;
+    this.dir=new THREE.Vector3();
+    this.el.addEventListener('axismove',e=>{
+      this.axis=e.detail.axis;
     });
-    el.addEventListener('mouseleave',()=>{
-      el.setAttribute('material','opacity',1);
-    });
-  }
-});
-AFRAME.registerComponent('ctrl-ray',{
-  init(){
-    this.el.addEventListener('triggerdown',()=>{
-      const r=this.el.components.raycaster;
-      if(r&&r.intersectedEls.length) r.intersectedEls[0].emit('click');
-    });
+  },
+  tick(t,dt){
+    if(!this.axis||!this.el.sceneEl.is('vr-mode')) return;
+    const [,, x,,z]=this.axis; // right controller x/z
+    if(!x&&!z) return;
+    const rig=document.getElementById('rig');
+    const cam=document.getElementById('cam');
+    if(!rig||!cam) return;
+    const yaw=cam.object3D.rotation.y;
+    const dx=x*Math.cos(yaw)-z*Math.sin(yaw); // wait, wrong sign
+    const dz=x*Math.sin(yaw)+z*Math.cos(yaw);
+    const pos=rig.object3D.position;
+    pos.x+=dx*this.speed*(dt/1000);
+    pos.z+=dz*this.speed*(dt/1000);
   }
 });
 document.querySelector('a-scene').addEventListener('loaded',()=>{
-  document.querySelectorAll('.btn3d').forEach(el=>el.setAttribute('diegetic-btn',''));
+  document.querySelectorAll('.btn3d').forEach(el=>{
+    if(!el.components['diegetic-btn'])
+      el.setAttribute('diegetic-btn','');
+  });
   const rh=document.getElementById('rhand');
-  if(rh) rh.setAttribute('ctrl-ray','');
-  // Draw canvases immediately
+  if(rh&&!rh.components['ctrl-ray']) rh.setAttribute('ctrl-ray','');
   drawTerminalCanvas(null);
   drawGuideCanvas();
+  drawVrHud(null);
 });
 
 function selOrder(o){
